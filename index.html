@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>前端工程师 · 作品集</title>
+  <meta name="description" content="前端开发工程师个人作品集，展示项目案例与技术实践。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="前端工程师 · 作品集">
+  <meta property="og:description" content="前端开发工程师个人作品集。">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 950:'#020617', 900:'#0a0f1e', 800:'#0f1629', 700:'#1a2040', 600:'#2a3a5c' },
+            accent: { DEFAULT: '#64ffda', dark: '#52d4b6' },
+          },
+          fontFamily: {
+            sans: ['Inter','system-ui','sans-serif'],
+            mono: ['JetBrains Mono','monospace'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css?v=bc2">
+</head>
+<body class="bg-navy-900 text-slate-300 font-sans antialiased">
+
+  <!-- 鼠标特效画布（底层，不遮挡内容、不拦截点击） -->
+  <canvas id="fx-canvas"></canvas>
+
+  <!-- 双栏布局 -->
+  <div id="layout-root" class="lg:flex lg:max-w-6xl lg:mx-auto lg:px-16 lg:gap-12">
+    <!-- 左侧 sticky 侧边栏 -->
+    <aside id="sidebar" class="lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center px-8 lg:px-2 py-16"></aside>
+
+    <!-- 右侧主内容 -->
+    <main id="content" class="flex-1 lg:max-w-3xl lg:py-40 px-8 lg:px-2 pb-20"></main>
+  </div>
+
+  <!-- 右上角锁图标（唯一访客可见的管理入口） -->
+  <button id="lock-toggle" aria-label="管理员入口" title="管理员入口" class="fixed top-4 right-4 z-50 text-slate-600 hover:text-accent transition-colors opacity-50 hover:opacity-100">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+  </button>
+
+  <!-- 管理员组件动态挂载点（访客模式下为空） -->
+  <div id="admin-root"></div>
+
+  <!-- 脚本（带版本号防缓存） -->
+  <script src="js/store.js?v=bc2"></script>
+  <script src="js/render.js?v=bc3"></script>
+  <script src="js/admin.js?v=bc2"></script>
+  <script src="js/effects.js?v=bc13"></script>
+  <script src="js/app.js?v=bc2"></script>
+</body>
+</html>
