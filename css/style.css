@@ -1,0 +1,63 @@
+/* style.css — 自定义补充样式 */
+
+/* 滚动条 */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #0a0f1e; }
+::-webkit-scrollbar-thumb { background: #1a2040; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #2a3a5c; }
+
+/* 选中文字 */
+::selection { background: #64ffda; color: #0a0f1e; }
+
+/* 导航链接 hover 下划线 */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: ''; position: absolute; bottom: -2px; left: 0;
+  width: 0; height: 1px; background: #64ffda;
+  transition: width .2s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after { width: 100%; }
+
+/* 外部链接 hover 小图标 */
+.ext-link { display: inline-flex; align-items: center; gap: 2px; }
+.ext-link .link-arrow { opacity: .3; transition: opacity .2s, transform .2s; }
+.ext-link:hover .link-arrow { opacity: 1; transform: translate(2px, -2px); }
+
+/* 拖拽投放区 */
+.dropzone-active {
+  border-color: #64ffda !important;
+  background: rgba(100,255,218,.05);
+}
+.card-dragging { opacity: .4; }
+.card-drag-over { border-color: #64ffda !important; }
+
+/* 弹窗淡入 */
+.modal-fade { animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* 抽屉滑入 */
+.drawer-slide { animation: slideIn .25s ease; }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+/* 卡片 hover 上浮 */
+.card-hover { transition: transform .3s, box-shadow .3s; }
+.card-hover:hover { transform: translateY(-4px); box-shadow: 0 12px 30px -10px rgba(2,6,23,.5); }
+
+/* 鼠标特效画布：底层背景层，绝不遮挡内容/按钮/链接 */
+#fx-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  display: block;
+}
+
+/* 内容层置于特效之上 */
+#layout-root { position: relative; z-index: 10; }
+
+/* 锁图标与 admin-root 始终在最上层 */
+#lock-toggle, #admin-root { z-index: 50; }
