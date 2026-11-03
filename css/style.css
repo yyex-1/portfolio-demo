@@ -61,3 +61,140 @@
 
 /* 锁图标与 admin-root 始终在最上层 */
 #lock-toggle, #admin-root { z-index: 50; }
+
+/* ============================================
+   开场屏 hero（流光粒子 + 大标题）
+   ============================================ */
+#hero {
+  position: relative;
+  z-index: 5;                    /* 盖过 fx-canvas(fixed z-0)，低于 layout-root 内容层 */
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: radial-gradient(1300px 760px at 50% 36%, #101c36 0%, #0a0f1e 58%, #060a13 100%);
+}
+
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;          /* 不拦截点击，交互监听在 #hero 上 */
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 1.5rem;
+  will-change: transform;        /* 鼠标视差 */
+}
+
+/* 大标题：宋体、字距、逐字浮现 */
+#hero-title {
+  margin: 0;
+  font-family: 'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  font-weight: 900;
+  font-size: clamp(3rem, 9vw, 6.5rem);
+  letter-spacing: .1em;
+  text-indent: .1em;             /* 抵消最后一字字距，视觉居中 */
+  line-height: 1.18;
+  color: #e9eef7;
+  text-shadow: 0 2px 46px rgba(2, 6, 23, .85);
+}
+#hero-title .ch {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .8s cubic-bezier(.2,.6,.2,1), transform .8s cubic-bezier(.2,.6,.2,1);
+}
+#hero-title.in .ch { opacity: 1; transform: none; }
+
+/* 名字 / 头衔 / 链接：错峰淡入 */
+.hero-name {
+  margin: 2.6rem 0 0;
+  font-size: 1.3rem;
+  letter-spacing: .5em;
+  text-indent: .5em;
+  color: #cbd5e1;
+  opacity: 0;
+  animation: heroFade 1s ease .95s forwards;
+}
+.hero-role {
+  margin: 1rem 0 0;
+  font-size: .78rem;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .55em;
+  text-indent: .55em;
+  color: #64ffda;
+  opacity: 0;
+  animation: heroFade 1s ease 1.25s forwards;
+}
+.hero-links {
+  margin-top: 2.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  opacity: 0;
+  animation: heroFade 1s ease 1.5s forwards;
+}
+.hero-links a {
+  font-size: .72rem;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .22em;
+  color: #94a3b8;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color .2s ease, border-color .2s ease;
+}
+.hero-links a:hover { color: #64ffda; border-color: rgba(100,255,218,.45); }
+
+/* 底部滚动提示 */
+.hero-scroll-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 2.2rem;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .65rem;
+  opacity: 0;
+  animation: heroFade 1s ease 1.9s forwards;
+}
+.hero-scroll-hint span {
+  font-size: .62rem;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: .42em;
+  text-indent: .42em;
+  color: #64748b;
+}
+.hero-scroll-hint i {
+  display: block;
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(#64ffda, rgba(100,255,218,0));
+  transform-origin: top;
+  animation: heroLine 1.9s ease-in-out infinite;
+}
+
+@keyframes heroFade { to { opacity: 1; } }
+@keyframes heroLine {
+  0%   { transform: scaleY(0); opacity: 0; }
+  45%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* 弱动效偏好：跳过动画 */
+@media (prefers-reduced-motion: reduce) {
+  #hero-title .ch { opacity: 1; transform: none; transition: none; }
+  .hero-name, .hero-role, .hero-links, .hero-scroll-hint { opacity: 1; animation: none; }
+  .hero-scroll-hint i { animation: none; }
+}

@@ -11,7 +11,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -30,12 +30,26 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=bc2">
+  <link rel="stylesheet" href="css/style.css?v=hero1">
 </head>
 <body class="bg-navy-900 text-slate-300 font-sans antialiased">
 
   <!-- 鼠标特效画布（底层，不遮挡内容、不拦截点击） -->
   <canvas id="fx-canvas"></canvas>
+
+  <!-- 开场屏：流光粒子 hero（hero.js 渲染交互） -->
+  <section id="hero" aria-label="开场">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-inner">
+      <h1 id="hero-title">洪波涌起</h1>
+      <p class="hero-name" id="hero-name">曹洪江</p>
+      <p class="hero-role" id="hero-role"></p>
+      <div class="hero-links" id="hero-links"></div>
+    </div>
+    <div class="hero-scroll-hint" id="hero-hint">
+      <span>SCROLL</span><i></i>
+    </div>
+  </section>
 
   <!-- 双栏布局 -->
   <div id="layout-root" class="lg:flex lg:max-w-6xl lg:mx-auto lg:px-16 lg:gap-12">
@@ -60,5 +74,6 @@
   <script src="js/admin.js?v=bc2"></script>
   <script src="js/effects.js?v=bc13"></script>
   <script src="js/app.js?v=bc2"></script>
+  <script src="js/hero.js?v=hero1"></script>
 </body>
 </html>
