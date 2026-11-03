@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>前端工程师 · 作品集</title>
+  <title>曹洪江 · 作品集</title>
   <meta name="description" content="前端开发工程师个人作品集，展示项目案例与技术实践。">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="前端工程师 · 作品集">
+  <meta property="og:title" content="曹洪江 · 作品集">
   <meta property="og:description" content="前端开发工程师个人作品集。">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;200;300;400;500&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -23,63 +23,46 @@
             accent: { DEFAULT: '#64ffda', dark: '#52d4b6' },
           },
           fontFamily: {
-            sans: ['Inter','system-ui','sans-serif'],
-            mono: ['JetBrains Mono','monospace'],
+            sans: ['JetBrains Mono','ui-monospace','monospace'],
+            mono: ['JetBrains Mono','ui-monospace','monospace'],
           },
         },
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=hero2">
+  <link rel="stylesheet" href="css/style.css?v=mono1">
 </head>
-<body class="bg-navy-900 text-slate-300 font-sans antialiased">
+<body>
 
-  <!-- 鼠标特效画布（底层，不遮挡内容、不拦截点击） -->
-  <canvas id="fx-canvas"></canvas>
+  <!-- 胶片颗粒覆盖层 -->
+  <div class="grain" aria-hidden="true"></div>
 
-  <!-- 开场屏：流光粒子 hero（hero.js 渲染交互） -->
-  <section id="hero" aria-label="开场">
-    <div class="hero-aurora" aria-hidden="true">
-      <span class="aurora aurora-1"></span>
-      <span class="aurora aurora-2"></span>
-      <span class="aurora aurora-3"></span>
-    </div>
-    <canvas id="hero-canvas"></canvas>
-    <div class="hero-grain" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <h1 id="hero-title">洪波涌起</h1>
-      <p class="hero-name" id="hero-name">曹洪江</p>
-      <p class="hero-role" id="hero-role"></p>
-      <div class="hero-links" id="hero-links"></div>
-    </div>
-    <div class="hero-scroll-hint" id="hero-hint">
-      <span>SCROLL</span><i></i>
-    </div>
-  </section>
-
-  <!-- 双栏布局 -->
-  <div id="layout-root" class="lg:flex lg:max-w-6xl lg:mx-auto lg:px-16 lg:gap-12">
-    <!-- 左侧 sticky 侧边栏 -->
-    <aside id="sidebar" class="lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:flex-shrink-0 lg:flex lg:flex-col lg:justify-center px-8 lg:px-2 py-16"></aside>
-
-    <!-- 右侧主内容 -->
-    <main id="content" class="flex-1 lg:max-w-3xl lg:py-40 px-8 lg:px-2 pb-20"></main>
-  </div>
-
-  <!-- 右上角锁图标（唯一访客可见的管理入口） -->
-  <button id="lock-toggle" aria-label="管理员入口" title="管理员入口" class="fixed top-4 right-4 z-50 text-slate-600 hover:text-accent transition-colors opacity-50 hover:opacity-100">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+  <!-- 左边缘：明暗切换（竖排） -->
+  <button id="theme-toggle" class="edge-toggle" aria-label="切换明暗主题">
+    <span class="edge-toggle-label">LIGHT / DARK</span>
   </button>
 
-  <!-- 管理员组件动态挂载点（访客模式下为空） -->
+  <!-- 右边缘：竖排标签 -->
+  <div class="edge-label" aria-hidden="true">PORTFOLIO — 2026</div>
+
+  <!-- 顶部导航 -->
+  <header class="site-head" id="site-head"></header>
+
+  <!-- 右上角锁图标（管理员入口） -->
+  <button id="lock-toggle" aria-label="管理员入口" title="管理员入口" class="lock-btn">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+  </button>
+
+  <!-- 主内容（render.js 渲染） -->
+  <main id="content" class="page"></main>
+
+  <!-- 管理员组件挂载点 -->
   <div id="admin-root"></div>
 
-  <!-- 脚本（带版本号防缓存） -->
   <script src="js/store.js?v=bc2"></script>
-  <script src="js/render.js?v=bc3"></script>
+  <script src="js/render.js?v=mono1"></script>
   <script src="js/admin.js?v=bc2"></script>
-  <script src="js/effects.js?v=bc13"></script>
+  <script src="js/theme.js?v=mono1"></script>
   <script src="js/app.js?v=bc2"></script>
-  <script src="js/hero.js?v=hero2"></script>
 </body>
 </html>
