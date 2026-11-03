@@ -26,12 +26,13 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=psa1">
+  <link rel="stylesheet" href="css/style.css?v=sand1">
 </head>
 <body>
 
   <!-- 画布（细边框 + 内部颗粒云） -->
   <div class="frame">
+    <canvas id="sand-canvas" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
 
     <!-- 左上：名字 + 副标题 + 竖排导航（render.js 渲染） -->
@@ -61,10 +62,11 @@
   <div id="admin-root"></div>
 
   <script src="js/store.js?v=bc2"></script>
-  <script src="js/render.js?v=psa1"></script>
+  <script src="js/render.js?v=sand1"></script>
   <script src="js/admin.js?v=bc2"></script>
   <script src="js/theme.js?v=mono1"></script>
   <script src="js/pager.js?v=psa1"></script>
+  <script src="js/sand.js?v=sand1"></script>
   <script src="js/app.js?v=psa1"></script>
 </body>
 </html>
