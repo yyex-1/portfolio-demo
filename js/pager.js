@@ -31,8 +31,8 @@
       v.classList.toggle('is-next', k > current);
     });
 
-    Array.prototype.forEach.call(document.querySelectorAll('[data-view]'), function (a) {
-      if (!a.classList.contains('head-link') && !a.classList.contains('head-name')) return;
+    Array.prototype.forEach.call(document.querySelectorAll('.nav-link, .brand-name a'), function (a) {
+      if (!a.classList.contains('nav-link')) return;
       a.classList.toggle('is-current', a.getAttribute('data-view') === name);
     });
 
@@ -97,7 +97,7 @@
     // 导航点击
     document.addEventListener('click', function (e) {
       var link = e.target.closest('[data-view]');
-      if (link && (link.classList.contains('head-link') || link.classList.contains('head-name'))) {
+      if (link && (link.classList.contains('nav-link') || link.closest('.brand-name'))) {
         e.preventDefault();
         var i = indexOfView(link.getAttribute('data-view'));
         if (i >= 0) goTo(i);
