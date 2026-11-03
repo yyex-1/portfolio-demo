@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>曹洪江 · 作品集</title>
+  <meta name="description" content="前端开发工程师个人作品集，展示项目案例与技术实践。">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="曹洪江 · 作品集">
+  <meta property="og:description" content="前端开发工程师个人作品集。">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: { 950:'#020617', 900:'#0a0f1e', 800:'#0f1629', 700:'#1a2040', 600:'#2a3a5c' },
+            accent: { DEFAULT: '#64ffda', dark: '#52d4b6' },
+          },
+          fontFamily: {
+            sans: ['Helvetica Neue','Arial','PingFang SC','Microsoft YaHei','sans-serif'],
+            mono: ['Helvetica Neue','Arial','PingFang SC','Microsoft YaHei','sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css?v=sand4">
+</head>
+<body>
+
+  <!-- 画布（细边框 + 内部颗粒云） -->
+  <div class="frame">
+    <canvas id="sand-canvas" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- 左上：名字 + 副标题 + 竖排导航（render.js 渲染） -->
+    <header id="site-head"></header>
+
+    <!-- 各视图叠放（render.js 渲染，pager.js 切换） -->
+    <main id="content" class="stage"></main>
+
+    <!-- 左下版权 -->
+    <div class="copyright" id="copyright"></div>
+  </div>
+
+  <!-- 画布外左边缘：竖排装饰 + 明暗切换 -->
+  <span class="edge-mono" aria-hidden="true">MONOSPACE</span>
+  <button id="theme-toggle" class="edge-theme" aria-label="切换明暗主题">
+    <span class="edge-theme-label">LIGHT</span>
+    <span class="edge-theme-box"></span>
+    <span class="edge-theme-label">DARK</span>
+  </button>
+
+  <!-- 右上角锁图标（管理员入口） -->
+  <button id="lock-toggle" aria-label="管理员入口" title="管理员入口" class="lock-btn">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+  </button>
+
+  <!-- 管理员组件挂载点 -->
+  <div id="admin-root"></div>
+
+  <script src="js/store.js?v=bc2"></script>
+  <script src="js/render.js?v=sand1"></script>
+  <script src="js/admin.js?v=bc2"></script>
+  <script src="js/theme.js?v=mono1"></script>
+  <script src="js/pager.js?v=psa1"></script>
+  <script src="js/sand.js?v=sand5"></script>
+  <script src="js/app.js?v=psa1"></script>
+</body>
+</html>
