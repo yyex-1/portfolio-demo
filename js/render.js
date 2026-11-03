@@ -1,6 +1,7 @@
 /**
- * render.js — 渲染层（极简等宽排版风格）
- * 结构：顶部导航 + 巨型名字 + 01 About / 02 Experience / 03 Projects / 04 Contact
+ * render.js — 渲染层（极简等宽排版 · 整屏分页）
+ * 结构：5 个整屏视图 HOME / 01 ABOUT / 02 EXPERIENCE / 03 PROJECTS / 04 CONTACT
+ * 不滚动：每个 .view 固定占满视口，由 js/pager.js 切换
  * 与 admin.js 的契约：项目仍渲染为 #content 内的 <article data-project-id>，供拖拽排序与编辑按钮挂载
  */
 (function (global) {
@@ -30,31 +31,41 @@
       { id: 'projects', label: 'PROJECTS' },
       { id: 'contact', label: 'CONTACT' }
     ].map(function (n) {
-      return '<a href="#' + n.id + '" class="head-link">' + n.label + '</a>';
+      return '<a href="#' + n.id + '" class="head-link" data-view="' + n.id + '">' + n.label + '</a>';
     }).join('');
 
     el.innerHTML =
-      '<a href="#top" class="head-name">' + esc(info.name) + '</a>' +
+      '<a href="#home" class="head-name" data-view="home">' + esc(info.name) + '</a>' +
       '<nav class="head-nav">' + nav + '</nav>' +
       '<div class="head-meta">' +
         (info.email ? '<a href="mailto:' + esc(info.email) + '" class="head-link">' + esc(info.email) + '</a>' : '') +
       '</div>';
   }
 
-  // ---- 巨型名字（masthead）----
-  function renderMasthead() {
-    var info = Store.getSiteInfo();
-    return '<section id="top" class="masthead">' +
-        '<h1 class="masthead-name">' + esc(info.name) + '</h1>' +
-        '<div class="masthead-grid">' +
-          '<p class="masthead-slogan">' + esc(info.slogan) + '</p>' +
-          '<p class="masthead-intro">' + esc(info.intro) + '</p>' +
-        '</div>' +
-        '<div class="masthead-foot">' +
-          '<span class="micro">AVAILABLE FOR WORK</span>' +
-          '<span class="micro">SCROLL ↓</span>' +
-        '</div>' +
+  // ---- 视图外壳 ----
+  function view(id, inner) {
+    return '<section class="view view-' + id + '" id="view-' + id + '" data-view="' + id + '">' +
+        '<div class="view-in">' + inner + '</div>' +
       '</section>';
+  }
+
+  // ---- 00 HOME ----
+  function renderHome() {
+    var info = Store.getSiteInfo();
+    var inner =
+      '<div class="home-top">' +
+        '<p class="micro">INDEX 00 — HOME</p>' +
+        '<h1 class="masthead-name">' + esc(info.name) + '</h1>' +
+      '</div>' +
+      '<div class="home-grid">' +
+        '<p class="masthead-slogan">' + esc(info.slogan) + '</p>' +
+        '<p class="masthead-intro">' + esc(info.intro) + '</p>' +
+      '</div>' +
+      '<div class="home-foot">' +
+        '<span class="micro">AVAILABLE FOR WORK</span>' +
+        '<span class="micro">↑ ↓ / WHEEL / SWIPE</span>' +
+      '</div>';
+    return view('home', inner);
   }
 
   // ---- 章节标题 ----
@@ -66,17 +77,27 @@
       '</div>';
   }
 
-  // ---- 01 About ----
+  // ---- 01 ABOUT ----
   function renderAbout() {
     var info = Store.getSiteInfo();
-    return '<section class="sec">' +
-        sectionHead('01', 'ABOUT', 'about') +
+    var projects = Store.getProjects() || [];
+    var exp = Store.getExperience() || [];
+
+    var inner =
+      sectionHead('01', 'ABOUT', 'about') +
+      '<div class="about-body">' +
         '<p class="about-text">' + esc(info.intro) + '</p>' +
-        '<p class="about-sub">' + esc(info.slogan) + '。以下是我参与或独立完成的项目。</p>' +
-      '</section>';
+      '</div>' +
+      '<div class="about-facts">' +
+        '<div class="fact"><span class="fact-k">PROJECTS</span><span class="fact-v">' + pad(projects.length) + '</span></div>' +
+        '<div class="fact"><span class="fact-k">EXPERIENCE</span><span class="fact-v">' + pad(exp.length) + '</span></div>' +
+        '<div class="fact"><span class="fact-k">STATUS</span><span class="fact-v">AVAILABLE</span></div>' +
+        (info.email ? '<div class="fact"><span class="fact-k">MAIL</span><span class="fact-v fact-mail">' + esc(info.email) + '</span></div>' : '') +
+      '</div>';
+    return view('about', inner);
   }
 
-  // ---- 02 Experience ----
+  // ---- 02 EXPERIENCE ----
   function renderExperience() {
     var list = Store.getExperience() || [];
     var rows = list.map(function (e) {
@@ -90,19 +111,18 @@
         '</div>';
     }).join('');
 
-    return '<section class="sec">' +
-        sectionHead('02', 'EXPERIENCE', 'experience') +
-        '<div class="rows">' + rows + '</div>' +
-      '</section>';
+    var inner =
+      sectionHead('02', 'EXPERIENCE', 'experience') +
+      '<div class="rows scrollable">' + rows + '</div>' +
+      '<div class="view-foot"><span class="micro">' + pad(list.length) + ' ENTRIES</span><span class="micro">2019 — NOW</span></div>';
+    return view('experience', inner);
   }
 
-  // ---- 03 Projects ----
+  // ---- 03 PROJECTS ----
   function renderProjects() {
     var all = Store.getProjects() || [];
-    var featuredIds = (Store.getFeaturedProjects() || []).map(function (p) { return p.id; });
 
     var rows = all.map(function (p, i) {
-      var isFeatured = featuredIds.indexOf(p.id) >= 0;
       var adminAttrs = global.Admin && global.Admin.isActive
         ? ' draggable="true" data-project-id="' + esc(p.id) + '"'
         : '';
@@ -113,7 +133,7 @@
       return '<article class="proj" data-project-id="' + esc(p.id) + '"' + adminAttrs + '>' +
           '<div class="proj-num">' + pad(i + 1) + '</div>' +
           '<div class="proj-main">' +
-            '<h3 class="proj-title">' + (isFeatured ? '<span class="dot" aria-hidden="true"></span>' : '') + esc(p.title) + '</h3>' +
+            '<h3 class="proj-title">' + (p.featured ? '<span class="dot" aria-hidden="true"></span>' : '') + esc(p.title) + '</h3>' +
             '<div class="proj-sub">' +
               '<p class="proj-desc">' + esc(p.desc) + '</p>' +
               (p.tags && p.tags.length ? '<div class="tags">' + p.tags.map(function (t) { return '[' + esc(t) + ']'; }).join('') + '</div>' : '') +
@@ -123,46 +143,46 @@
         '</article>';
     }).join('');
 
-    return '<section class="sec">' +
-        sectionHead('03', 'PROJECTS', 'projects') +
-        '<div class="proj-list">' + rows + '</div>' +
-        (all.length === 0
-          ? '<p class="empty">' + ((global.Admin && global.Admin.isActive) ? '暂无项目，拖拽网页链接到此处即可添加。' : '暂无项目。') + '</p>'
-          : '') +
-      '</section>';
+    var inner =
+      sectionHead('03', 'PROJECTS', 'projects') +
+      '<div id="projects-drop-mount"></div>' +
+      '<div class="proj-list scrollable">' + rows + '</div>' +
+      (all.length === 0
+        ? '<p class="empty">' + ((global.Admin && global.Admin.isActive) ? '暂无项目，拖拽网页链接到此处即可添加。' : '暂无项目。') + '</p>'
+        : '') +
+      '<div class="view-foot"><span class="micro">' + pad(all.length) + ' WORKS</span><span class="micro">CLICK / HOVER FOR DETAIL</span></div>';
+    return view('projects', inner);
   }
 
-  // ---- 04 Contact ----
+  // ---- 04 CONTACT ----
   function renderContact() {
     var info = Store.getSiteInfo();
     var social = (info.social || []).map(function (s) {
       return '<a class="clink" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.label) + '</a>';
     }).join('');
-    return '<section class="sec sec-contact">' +
-        sectionHead('04', 'CONTACT', 'contact') +
+
+    var inner =
+      sectionHead('04', 'CONTACT', 'contact') +
+      '<div class="contact-body">' +
         (info.email ? '<a class="contact-mail" href="mailto:' + esc(info.email) + '">' + esc(info.email) + '</a>' : '') +
         '<div class="contact-links">' +
           (info.github ? '<a class="clink" href="' + esc(info.github) + '" target="_blank" rel="noopener noreferrer">GITHUB ↗</a>' : '') +
           social +
         '</div>' +
-      '</section>';
-  }
-
-  function renderFooter() {
-    var info = Store.getSiteInfo();
-    return '<footer class="site-foot">' +
+      '</div>' +
+      '<div class="site-foot">' +
         '<span>© ' + new Date().getFullYear() + ' ' + esc(info.name) + '</span>' +
         '<span class="foot-note">' + esc(info.footer) + '</span>' +
-      '</footer>';
+      '</div>';
+    return view('contact', inner);
   }
 
   // ---- 全量渲染 ----
   function renderContent() {
     var el = document.getElementById('content');
     if (!el) return;
-    el.innerHTML = renderMasthead() + renderAbout() + renderExperience() + renderProjects() + renderContact() + renderFooter();
+    el.innerHTML = renderHome() + renderAbout() + renderExperience() + renderProjects() + renderContact();
 
-    // 锚点平滑滚动（原生 scroll-behavior 亦可，这里兜底老浏览器）
     if (global.Admin && global.Admin.isActive) {
       global.Admin.mountCardActions();
       global.Admin.mountDropZone();

@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>曹洪江 · 作品集</title>
   <meta name="description" content="前端开发工程师个人作品集，展示项目案例与技术实践。">
   <meta property="og:type" content="website">
@@ -30,7 +30,7 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=mono1">
+  <link rel="stylesheet" href="css/style.css?v=page1">
 </head>
 <body>
 
@@ -53,16 +53,27 @@
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
   </button>
 
-  <!-- 主内容（render.js 渲染） -->
-  <main id="content" class="page"></main>
+  <!-- 舞台：5 个整屏视图叠放，不滚动（render.js 渲染） -->
+  <main id="content" class="stage"></main>
+
+  <!-- 右下角翻页控件 -->
+  <div class="pager" id="pager">
+    <div class="pager-rail" aria-hidden="true"><i id="pager-bar"></i></div>
+    <div class="pager-count"><b id="pager-curr">01</b><span class="pager-sep">/</span><span id="pager-total">05</span></div>
+    <div class="pager-btns">
+      <button data-pager="prev" aria-label="上一屏">↑</button>
+      <button data-pager="next" aria-label="下一屏">↓</button>
+    </div>
+  </div>
 
   <!-- 管理员组件挂载点 -->
   <div id="admin-root"></div>
 
   <script src="js/store.js?v=bc2"></script>
-  <script src="js/render.js?v=mono1"></script>
+  <script src="js/render.js?v=page1"></script>
   <script src="js/admin.js?v=bc2"></script>
   <script src="js/theme.js?v=mono1"></script>
-  <script src="js/app.js?v=bc2"></script>
+  <script src="js/pager.js?v=page1"></script>
+  <script src="js/app.js?v=page1"></script>
 </body>
 </html>

@@ -137,7 +137,7 @@
 
   // ---- 拖拽投放区 ----
   function mountDropZone() {
-    var content = document.getElementById('content');
+    var content = document.getElementById('projects-drop-mount') || document.getElementById('content');
     if (!content) return;
     // 移除旧的
     var old = document.getElementById('admin-dropzone');
@@ -172,7 +172,7 @@
     // 点击手动添加
     dz.addEventListener('click', function () { openEditModal(null); });
 
-    content.insertBefore(dz, content.firstChild);
+    content.appendChild(dz);
     dropZoneEl = dz;
   }
 
