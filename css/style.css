@@ -307,9 +307,10 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .info-social {
   position: absolute;
   top: 50%;
-  left: 54%;
-  transform: translateY(-50%);
+  right: var(--gap);
+  transform: translateY(-58%);
   z-index: 4;
+  text-align: right;
 }
 .info-social .ilink { display: block; margin-bottom: 6px; }
 .info-awards {
@@ -489,7 +490,7 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .proj-item:hover .proj-title { transform: none; }
   .proj-meta, .proj-desc { text-align: left; }
   .info-top { top: 18px; right: 16px; }
-  .info-social { left: 16px; }
+  .info-social { right: 16px; }
   .info-awards { left: 16px; right: 16px; width: auto; text-align: left; }
   .contact-note { right: 16px; }
   .copyright { left: 16px; bottom: 10px; }
