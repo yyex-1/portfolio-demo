@@ -37,7 +37,7 @@
     var c = document.createElement('canvas');
     c.width = c.height = 64;
     var g2 = c.getContext('2d');
-    var rgb = isDark() ? '255,246,229' : '94,85,66';
+    var rgb = isDark() ? '228,234,241' : '74,80,88';
     var grad = g2.createRadialGradient(32, 32, 0, 32, 32, 32);
     grad.addColorStop(0, 'rgba(' + rgb + ',1)');
     grad.addColorStop(0.35, 'rgba(' + rgb + ',.62)');
@@ -60,7 +60,7 @@
       vy: 0,
       depth: depth,
       size: 0.55 + depth * 2.1 + Math.random() * 0.55,
-      alpha: (0.07 + Math.random() * 0.2) * (0.5 + depth * 0.95),
+      alpha: (0.10 + Math.random() * 0.27) * (0.55 + depth * 0.95),
       phase: Math.random() * Math.PI * 2,
       twinkle: 0.35 + Math.random() * 0.9,
       soft: depth > 0.74
@@ -68,7 +68,7 @@
   }
 
   function seed() {
-    var total = Math.round(Math.min(1900, Math.max(760, (W * H) / 1250)));
+    var total = Math.round(Math.min(2900, Math.max(1150, (W * H) / 900)));
     grains.length = 0;
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
@@ -165,22 +165,22 @@
     // 远沙丘
     dunePath(H * 0.66, H * 0.035, 0.0021, H * 0.012, 0.0068, 0.6, 0.08);
     var g1 = ctx.createLinearGradient(0, H * 0.58, 0, H);
-    g1.addColorStop(0, dark ? 'rgba(255,246,226,0.008)' : 'rgba(124,112,90,0.028)');
-    g1.addColorStop(1, dark ? 'rgba(255,246,226,0.042)' : 'rgba(124,112,90,0.072)');
+    g1.addColorStop(0, dark ? 'rgba(222,229,238,0.010)' : 'rgba(88,98,110,0.032)');
+    g1.addColorStop(1, dark ? 'rgba(222,229,238,0.05)' : 'rgba(88,98,110,0.085)');
     ctx.fillStyle = g1;
     ctx.fill();
 
     // 近沙丘
     dunePath(H * 0.78, H * 0.045, 0.0016, H * 0.016, 0.0052, 2.4, 0.055);
     var g2 = ctx.createLinearGradient(0, H * 0.68, 0, H);
-    g2.addColorStop(0, dark ? 'rgba(255,246,226,0.006)' : 'rgba(124,112,90,0.022)');
-    g2.addColorStop(1, dark ? 'rgba(255,246,226,0.062)' : 'rgba(124,112,90,0.105)');
+    g2.addColorStop(0, dark ? 'rgba(222,229,238,0.008)' : 'rgba(88,98,110,0.026)');
+    g2.addColorStop(1, dark ? 'rgba(222,229,238,0.072)' : 'rgba(88,98,110,0.115)');
     ctx.fillStyle = g2;
     ctx.fill();
 
     // 沙纹（风蚀纹路）
     ctx.lineWidth = 1;
-    ctx.strokeStyle = dark ? 'rgba(255,246,226,0.032)' : 'rgba(108,96,76,0.052)';
+    ctx.strokeStyle = dark ? 'rgba(222,229,238,0.038)' : 'rgba(80,90,102,0.058)';
     for (var i = 0; i < 5; i++) {
       var base = H * (0.795 + i * 0.036);
       ctx.beginPath();
@@ -192,9 +192,60 @@
     }
   }
 
+  /* ---------- 浓密颗粒云（离屏预渲染，参考站那种成团的喷雾感） ---------- */
+  var cloud = null, cloudKey = '';
+
+  function cloudImage() {
+    var key = (isDark() ? 'd' : 'l') + '|' + W + 'x' + H;
+    if (key === cloudKey) return cloud;
+
+    var cw = Math.max(320, Math.round(W * 0.72));
+    var ch = Math.max(320, Math.round(H * 1.05));
+    var c = document.createElement('canvas');
+    c.width = cw;
+    c.height = ch;
+    var g2 = c.getContext('2d');
+    var rgb = isDark() ? '222,229,238' : '66,72,81';
+    var cx = cw * 0.42, cy = ch * 0.36;
+    var R = Math.min(cw, ch) * 0.55;
+    var n = Math.round((cw * ch) / 26);
+
+    for (var i = 0; i < n; i++) {
+      var ang = Math.random() * Math.PI * 2;
+      var rr = R * Math.pow(Math.random(), 0.62);
+      // 用叠加的正弦让云的边缘参差、有缺口
+      rr *= 1 + Math.sin(ang * 3.1) * 0.2 + Math.sin(ang * 7.7 + 1.3) * 0.11;
+      var x = cx + Math.cos(ang) * rr * 1.18;
+      var y = cy + Math.sin(ang) * rr * 0.9;
+      if (x < 0 || y < 0 || x >= cw || y >= ch) continue;
+      if (Math.random() < 0.14) continue;          // 随机空洞，避免死板
+
+      var fall = Math.max(0, 1 - rr / R);
+      var a = Math.pow(fall, 1.15) * (0.10 + Math.random() * 0.62);
+      var s = 0.5 + Math.random() * 1.3;
+      g2.fillStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')';
+      g2.fillRect(x, y, s, s);
+    }
+
+    cloud = c;
+    cloudKey = key;
+    return cloud;
+  }
+
   /* ---------- 绘制 ---------- */
   function paint() {
     ctx.clearRect(0, 0, W, H);
+
+    // 颗粒云（左上，缓慢漂移）
+    var cl = cloudImage();
+    ctx.globalAlpha = isDark() ? 0.7 : 0.88;
+    ctx.drawImage(
+      cl,
+      -cl.width * 0.07 + Math.sin(time * 0.1) * 10,
+      -cl.height * 0.06 + Math.cos(time * 0.13) * 8
+    );
+    ctx.globalAlpha = 1;
+
     drawDunes();
 
     var img = spriteImage();
@@ -283,7 +334,7 @@
       g.vy = Math.sin(ang) * spd - 0.3;
       grains.push(g);
     }
-    if (grains.length > 2600) grains.splice(0, grains.length - 2600);
+    if (grains.length > 3600) grains.splice(0, grains.length - 3600);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {

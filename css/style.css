@@ -3,12 +3,12 @@
    ============================================================ */
 
 :root {
-  --body-bg: #d5d2cb;
-  --frame-bg: #efece6;
-  --ink: #1a1917;
-  --muted: #7b776f;
-  --line: #1a1917;
-  --hair: rgba(26, 25, 23, .11);
+  --body-bg: #ccCFd3;
+  --frame-bg: #e8eaed;
+  --ink: #17191c;
+  --muted: #6d737b;
+  --line: #17191c;
+  --hair: rgba(23, 25, 28, .1);
   --grain-opacity: .34;
   --gap: clamp(18px, 2.2vw, 30px);
   --ease: cubic-bezier(.16, .84, .28, 1);
@@ -22,12 +22,12 @@
 }
 
 html[data-theme="dark"] {
-  --body-bg: #0b0b0a;
-  --frame-bg: #151513;
-  --ink: #eae7e0;
-  --muted: #8b877f;
-  --line: #eae7e0;
-  --hair: rgba(234, 231, 224, .14);
+  --body-bg: #0a0b0c;
+  --frame-bg: #131417;
+  --ink: #e7eaee;
+  --muted: #868d95;
+  --line: #e7eaee;
+  --hair: rgba(231, 234, 238, .13);
   --grain-opacity: .13;
 }
 
@@ -229,23 +229,19 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .manifesto-line + .manifesto-line:not(:first-child) { color: var(--muted); }
 
-/* ---------- Projects：右侧窄列 ---------- */
+/* ---------- Projects：大字列表（右移留出呼吸位） ---------- */
 .view-projects {
   display: flex;
   justify-content: flex-end;
-  padding: calc(var(--gap) + clamp(96px, 15.5vh, 150px)) var(--gap) calc(var(--gap) + 26px) var(--gap);
+  padding: calc(var(--gap) + clamp(96px, 15.5vh, 150px)) calc(var(--gap) + clamp(44px, 8.5vw, 130px)) calc(var(--gap) + 26px) var(--gap);
 }
 .view-projects #projects-drop-mount { flex: none; width: 100%; }
 #projects-drop-mount:empty { display: none; }
 .proj-list {
-  width: min(540px, 58%);
+  width: min(680px, 68%);
   height: 100%;
 }
-.proj { margin: 0; padding-bottom: clamp(14px, 2.4vh, 24px); }
-.proj + .proj {
-  border-top: 1px solid var(--hair);
-  padding-top: clamp(14px, 2.4vh, 24px);
-}
+.proj { margin: 0 0 clamp(24px, 4.4vh, 46px); }
 .proj-item {
   display: block;
   text-align: right;
@@ -254,16 +250,16 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-title {
   margin: 0;
   font-family: var(--ff-han);
-  font-size: clamp(25px, 3.15vw, 43px);
+  font-size: clamp(30px, 4.2vw, 58px);
   font-weight: 300;
   letter-spacing: .03em;
-  line-height: 1.14;
+  line-height: 1.1;
   transition: color .3s ease, transform .45s var(--ease);
 }
 .proj-item:hover .proj-title,
 .proj-item:focus-visible .proj-title {
   color: var(--muted);
-  transform: translateX(-5px);
+  transform: translateX(-6px);
 }
 .proj-meta {
   margin: 7px 0 0;
@@ -286,7 +282,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .proj-code:hover { border-color: var(--ink); }
 .proj-desc {
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   font-size: 10.5px;
   line-height: 1.75;
   letter-spacing: .018em;
@@ -489,7 +485,7 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .view-projects { padding: 108px 16px 58px; justify-content: stretch; }
   .proj-list { width: 100%; }
   .proj-item { text-align: left; }
-  .proj-title { font-size: clamp(21px, 6.2vw, 31px); }
+  .proj-title { font-size: clamp(24px, 6.8vw, 34px); }
   .proj-item:hover .proj-title { transform: none; }
   .proj-meta, .proj-desc { text-align: left; }
   .info-top { top: 18px; right: 16px; }
