@@ -236,8 +236,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 5200 : 9000;
-    return Math.round(Math.min(cap, Math.max(3200, (W * H) / 210)));
+    var cap = W < 760 ? 7000 : 13000;
+    return Math.round(Math.min(cap, Math.max(4400, (W * H) / 150)));
   }
 
   function seed() {
@@ -246,7 +246,7 @@
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
     }
-    var nn = W < 760 ? 340 : 720;
+    var nn = W < 760 ? 460 : 1000;
     near.length = 0;
     for (var j = 0; j < nn; j++) {
       near.push(newNear(Math.random() * W, Math.random() * H));
@@ -321,7 +321,7 @@
     }
 
     var dwellN = mouse.dwell / DWELL_MAX;
-    var R = 20 + dwellN * 30, R2 = R * R;   // 刚悬停 20px → 停满 50px
+    var R = 20 + dwellN * 80, R2 = R * R;   // 刚悬停 20px → 停满 100px
     var depthGate = 0.78 - dwellN * 0.78;   // 0.78 → 0：越停越往深处掏
     var dwellBoost = 0.7 + dwellN * 0.75;
 
@@ -415,8 +415,9 @@
     /* 远景沙丘：单层慢速漂移，方向随时间缓慢旋转 */
     var t = bakeTexture();
     advanceBackground(dtCache);
-    var sx = bg.ox % TW;
-    var sy = bg.oy % TH;
+    /* 取模强制为正：负偏移时若不修正，平铺会在左/上留出空白带 */
+    var sx = ((bg.ox % TW) + TW) % TW;
+    var sy = ((bg.oy % TH) + TH) % TH;
     ctx.globalAlpha = 0.95;
     ctx.drawImage(t, -sx, -sy, TW, TH);
     ctx.drawImage(t, TW - sx, -sy, TW, TH);
@@ -531,8 +532,8 @@
       g.vy = Math.sin(ang) * (0.6 + Math.random() * 2) - 0.6;
       near.push(g);
     }
-    if (grains.length > 8000) grains.splice(0, grains.length - 8000);
-    if (near.length > 900) near.splice(0, near.length - 900);
+    if (grains.length > 13600) grains.splice(0, grains.length - 13600);
+    if (near.length > 1150) near.splice(0, near.length - 1150);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {
