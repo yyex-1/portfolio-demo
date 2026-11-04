@@ -29,26 +29,21 @@
 
   var TEX_SCALE = 1.6;   // 纹理比视口大，图案不在每屏重复
 
-  /* 背景两层：方向、速度、缩放都不同；速度用低通缓动，产生黏滞拖拽感 */
-  var LAYERS = [
-    { ox: 0, oy: 0, vx: -7, vy: -4.2, bx: -7, by: -4.2, a: 0.62, sc: 1.0 },
-    { ox: 640, oy: 520, vx: 4.6, vy: 3.4, bx: 4.6, by: 3.4, a: 0.44, sc: 1.16 }
-  ];
+  /* 背景：单层纹理，方向随时间缓慢旋转 → 慢速、多方向漂移；
+   * 速度用低通缓动跟踪，带一点黏滞拖拽感 */
+  var bg = { ox: 0, oy: 0, vx: -2.2, vy: -1.4 };
   var dtCache = 16;
 
-  function advanceLayers(dt) {
+  function advanceBackground(dt) {
     var k = dt / 16.7;
-    for (var i = 0; i < LAYERS.length; i++) {
-      var L = LAYERS[i];
-      /* 目标速度本身缓慢摆动 → 时而加速、时而几乎停住 */
-      var txx = L.bx + Math.sin(time * 0.16 + i * 2.1) * 3.4;
-      var tyy = L.by + Math.cos(time * 0.12 + i * 1.7) * 2.8;
-      /* 低通跟踪：速度变化滞后于目标，就是"黏"的来源 */
-      L.vx += (txx - L.vx) * Math.min(1, 0.014 * k);
-      L.vy += (tyy - L.vy) * Math.min(1, 0.014 * k);
-      L.ox += L.vx * k;
-      L.oy += L.vy * k;
-    }
+    var ang = time * 0.045 + Math.sin(time * 0.07) * 0.6;   // 方向缓慢换向
+    var sp = 2.3 + Math.sin(time * 0.09) * 0.9;             // 速度轻微起伏
+    var tx = Math.cos(ang) * sp;
+    var ty = Math.sin(ang) * sp * 0.66;
+    bg.vx += (tx - bg.vx) * Math.min(1, 0.012 * k);
+    bg.vy += (ty - bg.vy) * Math.min(1, 0.012 * k);
+    bg.ox += bg.vx * k;
+    bg.oy += bg.vy * k;
   }
 
   function isDark() {
@@ -215,8 +210,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 3600 : 6200;
-    return Math.round(Math.min(cap, Math.max(2200, (W * H) / 300)));
+    var cap = W < 760 ? 5200 : 9000;
+    return Math.round(Math.min(cap, Math.max(3200, (W * H) / 210)));
   }
 
   function seed() {
@@ -225,7 +220,7 @@
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
     }
-    var nn = W < 760 ? 210 : 420;
+    var nn = W < 760 ? 340 : 720;
     near.length = 0;
     for (var j = 0; j < nn; j++) {
       near.push(newNear(Math.random() * W, Math.random() * H));
@@ -289,7 +284,7 @@
 
   /* ================= 物理步进 ================= */
   function step(dt) {
-    var DWELL_MAX = 2.4;
+    var DWELL_MAX = 3.4;
 
     if (mouse.inside) {
       var moving = Math.abs(mouse.vx) + Math.abs(mouse.vy);
@@ -300,9 +295,9 @@
     }
 
     var dwellN = mouse.dwell / DWELL_MAX;
-    var R = 120 + dwellN * 150, R2 = R * R;
-    var depthGate = 0.6 - dwellN * 0.6;
-    var dwellBoost = 0.75 + dwellN * 0.45;
+    var R = 100 + dwellN * 250, R2 = R * R;
+    var depthGate = 0.78 - dwellN * 0.78;   // 0.78 → 0：越停越往深处掏
+    var dwellBoost = 0.7 + dwellN * 0.75;
 
     var i, g;
 
@@ -310,10 +305,10 @@
     for (i = 0; i < grains.length; i++) {
       g = grains[i];
       var f = flow(g.x, g.y);
-      var speed = 0.22 + g.depth * 0.85;
+      var speed = 0.14 + g.depth * 0.5;
 
-      g.vx += (f[0] * speed - g.vx) * 0.032;
-      g.vy += (f[1] * speed - g.vy) * 0.032;
+      g.vx += (f[0] * speed - g.vx) * 0.026;
+      g.vy += (f[1] * speed - g.vy) * 0.026;
 
       if (mouse.inside && g.depth >= depthGate) {
         var dx = g.x - mouse.x;
@@ -331,8 +326,8 @@
         }
       }
 
-      if (g.vx > 3.2) g.vx = 3.2; else if (g.vx < -3.2) g.vx = -3.2;
-      if (g.vy > 3.2) g.vy = 3.2; else if (g.vy < -3.2) g.vy = -3.2;
+      if (g.vx > 2.2) g.vx = 2.2; else if (g.vx < -2.2) g.vx = -2.2;
+      if (g.vy > 2.2) g.vy = 2.2; else if (g.vy < -2.2) g.vy = -2.2;
 
       g.x += g.vx;
       g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.1 * (0.4 + g.depth);
@@ -345,13 +340,13 @@
       g.phase += 0.012 * g.twinkle;
     }
 
-    /* 近景粗沙：跑得更快、被推开更狠，像贴着镜头飞过 */
-    var R2n = 190 * 190;
+    /* 近景粗沙：比浮沙稍快一点，被推开的范围随驻留增长 */
+    var R2n = R * R * 2.2;
     for (i = 0; i < near.length; i++) {
       g = near[i];
       var fn = flow(g.x * 0.7, g.y * 0.7);
-      g.vx += (fn[0] * g.speed * 0.85 - g.vx) * 0.035;
-      g.vy += (fn[1] * g.speed * 0.85 - g.vy) * 0.035;
+      g.vx += (fn[0] * g.speed * 0.5 - g.vx) * 0.03;
+      g.vy += (fn[1] * g.speed * 0.5 - g.vy) * 0.03;
 
       if (mouse.inside) {
         var ndx = g.x - mouse.x;
@@ -359,20 +354,21 @@
         var nd2 = ndx * ndx + ndy * ndy;
         if (nd2 < R2n) {
           var nd = Math.sqrt(nd2) || 1;
-          var nk = 1 - nd / 190;
-          nk = nk * nk;
-          g.vx += (ndx / nd) * nk * 1.5;
-          g.vy += (ndy / nd) * nk * 1.5;
+          var nk = 1 - nd / (R * 1.48);
+          nk = nk > 0 ? nk * nk : 0;
+          var npush = nk * (1.2 + dwellN * 2.4);
+          g.vx += (ndx / nd) * npush;
+          g.vy += (ndy / nd) * npush;
           g.vx += mouse.vx * 0.05 * nk;
           g.vy += mouse.vy * 0.05 * nk;
         }
       }
 
-      if (g.vx > 3) g.vx = 3; else if (g.vx < -3) g.vx = -3;
-      if (g.vy > 3) g.vy = 3; else if (g.vy < -3) g.vy = -3;
+      if (g.vx > 1.8) g.vx = 1.8; else if (g.vx < -1.8) g.vx = -1.8;
+      if (g.vy > 1.8) g.vy = 1.8; else if (g.vy < -1.8) g.vy = -1.8;
 
       g.x += g.vx;
-      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.22;
+      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.16;
 
       if (g.x < -12) { g.x = W + 12; g.y = Math.random() * H; }
       else if (g.x > W + 12) { g.x = -12; g.y = Math.random() * H; }
@@ -390,19 +386,16 @@
   function paint() {
     ctx.clearRect(0, 0, W, H);
 
-    /* 远景沙丘：两层异向滚动，速度带黏滞缓动 —— 像沙被风慢慢拖着走 */
+    /* 远景沙丘：单层慢速漂移，方向随时间缓慢旋转 */
     var t = bakeTexture();
-    advanceLayers(dtCache);
-    for (var li = 0; li < LAYERS.length; li++) {
-      var L = LAYERS[li];
-      var dw = TW * L.sc, dh = TH * L.sc;
-      var sx = L.ox % dw, sy = L.oy % dh;
-      ctx.globalAlpha = L.a;
-      ctx.drawImage(t, -sx, -sy, dw, dh);
-      ctx.drawImage(t, dw - sx, -sy, dw, dh);
-      ctx.drawImage(t, -sx, dh - sy, dw, dh);
-      ctx.drawImage(t, dw - sx, dh - sy, dw, dh);
-    }
+    advanceBackground(dtCache);
+    var sx = bg.ox % TW;
+    var sy = bg.oy % TH;
+    ctx.globalAlpha = 0.95;
+    ctx.drawImage(t, -sx, -sy, TW, TH);
+    ctx.drawImage(t, TW - sx, -sy, TW, TH);
+    ctx.drawImage(t, -sx, TH - sy, TW, TH);
+    ctx.drawImage(t, TW - sx, TH - sy, TW, TH);
 
     /* 中层浮沙 */
     var img = spriteImage();
