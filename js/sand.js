@@ -237,8 +237,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 7400 : 13400;
-    return Math.round(Math.min(cap, Math.max(4600, (W * H) / 144)));
+    var cap = W < 760 ? 9800 : 18000;
+    return Math.round(Math.min(cap, Math.max(6200, (W * H) / 100)));
   }
 
   function seed() {
@@ -247,7 +247,7 @@
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
     }
-    var nn = W < 760 ? 300 : 640;
+    var nn = W < 760 ? 420 : 900;
     near.length = 0;
     for (var j = 0; j < nn; j++) {
       near.push(newNear(Math.random() * W, Math.random() * H));
@@ -533,8 +533,8 @@
       g.vy = Math.sin(ang) * (0.6 + Math.random() * 2) - 0.6;
       near.push(g);
     }
-    if (grains.length > 13600) grains.splice(0, grains.length - 13600);
-    if (near.length > 1150) near.splice(0, near.length - 1150);
+    if (grains.length > 18600) grains.splice(0, grains.length - 18600);
+    if (near.length > 1500) near.splice(0, near.length - 1500);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {
