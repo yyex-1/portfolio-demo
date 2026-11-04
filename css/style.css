@@ -3,12 +3,12 @@
    ============================================================ */
 
 :root {
-  --body-bg: #ccCFd3;
-  --frame-bg: #e8eaed;
-  --ink: #0b0c0e;
-  --muted: #4a4f56;
-  --line: #0b0c0e;
-  --hair: rgba(11, 12, 14, .16);
+  --body-bg: #c8d3dc;
+  --frame-bg: #edf1f5;
+  --ink: #0a0d11;
+  --muted: #47525c;
+  --line: #0a0d11;
+  --hair: rgba(10, 13, 17, .15);
   --grain-opacity: .34;
   --gap: clamp(18px, 2.2vw, 30px);
   --ease: cubic-bezier(.16, .84, .28, 1);
@@ -22,10 +22,10 @@
 }
 
 html[data-theme="dark"] {
-  --body-bg: #0a0b0c;
-  --frame-bg: #131417;
+  --body-bg: #090b0f;
+  --frame-bg: #12151b;
   --ink: #f2f4f7;
-  --muted: #a8aeb6;
+  --muted: #a3adb8;
   --line: #f2f4f7;
   --hair: rgba(242, 244, 247, .18);
   --grain-opacity: .13;
@@ -401,11 +401,11 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   font-weight: 500;
   letter-spacing: .34em;
   text-transform: uppercase;
-  color: #55524c;
+  color: #4e5862;
   user-select: none;
 }
 html[data-theme="dark"] .edge-mono,
-html[data-theme="dark"] .edge-theme { color: #b3afa7; }
+html[data-theme="dark"] .edge-theme { color: #a5afba; }
 .edge-mono { bottom: 32%; }
 .edge-theme {
   bottom: 18px;

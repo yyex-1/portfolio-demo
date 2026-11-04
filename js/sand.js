@@ -35,7 +35,7 @@
     var c = document.createElement('canvas');
     c.width = c.height = 48;
     var g2 = c.getContext('2d');
-    var rgb = isDark() ? '240,244,249' : '58,62,70';
+    var rgb = isDark() ? '238,243,249' : '52,62,74';
     var grad = g2.createRadialGradient(24, 24, 0, 24, 24, 24);
     grad.addColorStop(0, 'rgba(' + rgb + ',1)');
     grad.addColorStop(0.35, 'rgba(' + rgb + ',.62)');
