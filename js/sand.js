@@ -1,9 +1,10 @@
 /**
- * sand.js — 沙砾粒子层（纯净版）
- * 背景：纯色，无任何图案；画面上只有细小沙粒随风流动
- *   · 三层景深，颗粒小而密
- *   · 鼠标经过推开沙粒并带起气流，点击迸起一撮沙
- * 明暗主题自动换色；离开页面暂停；prefers-reduced-motion 只画一帧。
+ * sand.js — 沙砾粒子层（点彩云浪版）
+ * 背景瓷白，画面上只有细沙：
+ *   · 底层：高密度 stipple 云——两列大尺度波场决定浓淡，
+ *     烘焙成离屏纹理后沿对角线缓慢滚动，像云浪滚过页面
+ *   · 顶层：稀疏的活沙粒子，随风摆动、鼠标推开、点击迸沙
+ * 明暗主题自动换色重烘焙；离开页面暂停；prefers-reduced-motion 只画一帧。
  */
 (function () {
   'use strict';
@@ -21,6 +22,7 @@
   var time = 0;
   var visible = true;
   var sprite = null, spriteKey = '';
+  var tex = null, texKey = '';
   var mouse = { x: -1e4, y: -1e4, px: -1e4, py: -1e4, vx: 0, vy: 0, inside: false, dwell: 0 };
 
   function isDark() {
@@ -48,9 +50,7 @@
     return sprite;
   }
 
-  /* ---------- 沙粒 ----------
-   * depth: 0 = 深层（细小暗淡），1 = 表层（大而亮）
-   * 幂次取样让深层沙粒占多数；颗粒极细，像悬浮的尘 */
+  /* ---------- 活沙粒子 ---------- */
   function newGrain(x, y) {
     var depth = Math.pow(Math.random(), 1.7);
     return {
@@ -69,8 +69,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 6200 : 10400;
-    return Math.round(Math.min(cap, Math.max(3200, (W * H) / 215)));
+    var cap = W < 760 ? 4600 : 8000;
+    return Math.round(Math.min(cap, Math.max(2600, (W * H) / 240)));
   }
 
   function seed() {
@@ -81,9 +81,7 @@
     }
   }
 
-  /* ---------- 风场：海浪式轨道流 ----------
-   * 两列行波叠加：沙粒沿椭圆轨道打转，像浪从画面上滚过去，
-   * 再叠一层慢波制造错落，整体像悬浮在气流里。 */
+  /* ---------- 活沙风场：海浪式轨道流 ---------- */
   function flow(x, y) {
     var ph = x * 0.0042 + y * 0.0018 - time * 1.3;
     var ph2 = (x + y) * 0.0011 - time * 0.5;
@@ -92,9 +90,47 @@
     return [fx, fy];
   }
 
-  /* ---------- 物理步进 ----------
-   * 鼠标驻留穿透：刚悬停只推动近景（depth 高）沙粒；
-   * 停留越久，作用半径越大、逐渐波及远景细沙；快速移动或离开则衰减。 */
+  /* ---------- 云浪纹理（烘焙一次，滚动播放） ----------
+   * 周期化波场保证纹理可无缝平铺；
+   * 点的疏密直接由波场决定 —— 浪峰浓、浪谷空。 */
+  function fieldTile(u, v) {
+    var s = Math.sin(2 * Math.PI * (2 * u + v)) * 0.58 +
+            Math.sin(2 * Math.PI * (u - 2 * v) + 1.7) * 0.42;
+    var f = s * 0.5 + 0.5;
+    return f * f;
+  }
+
+  function bakeTexture() {
+    var key = (isDark() ? 'd' : 'l') + 'x' + W + 'x' + H;
+    if (tex && key === texKey) return tex;
+
+    var c = document.createElement('canvas');
+    c.width = Math.max(2, Math.round(W * DPR));
+    c.height = Math.max(2, Math.round(H * DPR));
+    var g2 = c.getContext('2d');
+    g2.setTransform(DPR, 0, 0, DPR, 0, 0);
+
+    var rgb = isDark() ? '236,241,247' : '47,56,66';
+    var tries = Math.round((W * H) / 3.2);
+    for (var i = 0; i < tries; i++) {
+      var x = Math.random() * W;
+      var y = Math.random() * H;
+      var f = fieldTile(x / W, y / H);
+      if (Math.random() > f * 1.05) continue;
+
+      var d = Math.pow(Math.random(), 1.6);
+      var s = 0.35 + d * 0.75 + f * 0.4;
+      g2.globalAlpha = 0.08 + 0.4 * f * (0.5 + d * 0.5);
+      g2.fillStyle = 'rgb(' + rgb + ')';
+      g2.fillRect(x, y, s, s);
+    }
+
+    tex = c;
+    texKey = key;
+    return tex;
+  }
+
+  /* ---------- 物理步进（活沙 + 鼠标驻留穿透） ---------- */
   function step(dt) {
     var DWELL_MAX = 2.4;
 
@@ -108,7 +144,7 @@
 
     var dwellN = mouse.dwell / DWELL_MAX;
     var R = 120 + dwellN * 150, R2 = R * R;
-    var depthGate = 0.6 - dwellN * 0.6;   // 0.6 → 0：停留越久，越深的沙也被扰动
+    var depthGate = 0.6 - dwellN * 0.6;
     var dwellBoost = 0.75 + dwellN * 0.45;
 
     for (var i = 0; i < grains.length; i++) {
@@ -157,16 +193,27 @@
   function paint() {
     ctx.clearRect(0, 0, W, H);
 
+    /* 云浪：纹理沿对角线缓慢滚动，四份平铺无缝衔接 */
+    var t = bakeTexture();
+    var ox = (time * 13) % W;
+    var oy = (time * 7.5) % H;
+    ctx.globalAlpha = 0.92;
+    ctx.drawImage(t, -ox, -oy, W, H);
+    ctx.drawImage(t, W - ox, -oy, W, H);
+    ctx.drawImage(t, -ox, H - oy, W, H);
+    ctx.drawImage(t, W - ox, H - oy, W, H);
+
+    /* 活沙：稀疏一层，跟随呼吸与鼠标 */
     var img = spriteImage();
     for (var i = 0; i < grains.length; i++) {
       var g = grains[i];
       var a = g.alpha * (0.76 + 0.24 * Math.sin(g.phase));
       if (g.soft) {
         var s = g.size * 2.6;
-        ctx.globalAlpha = a * 0.92;
+        ctx.globalAlpha = Math.min(0.6, a * 0.92);
         ctx.drawImage(img, g.x - s / 2, g.y - s / 2, s, s);
       } else {
-        ctx.globalAlpha = a;
+        ctx.globalAlpha = Math.min(0.6, a);
         ctx.fillRect(g.x, g.y, g.size, g.size);
       }
     }
@@ -193,6 +240,7 @@
     canvas.width = Math.round(W * DPR);
     canvas.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    texKey = '';
     seed();
     paint();
   }
@@ -243,7 +291,7 @@
       g.vy = Math.sin(ang) * spd - 0.3;
       grains.push(g);
     }
-    if (grains.length > 11200) grains.splice(0, grains.length - 11200);
+    if (grains.length > 10000) grains.splice(0, grains.length - 10000);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {
