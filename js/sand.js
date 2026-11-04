@@ -204,15 +204,16 @@
 
   /* ================= 中层浮沙 ================= */
   function newGrain(x, y) {
-    var depth = Math.pow(Math.random(), 1.7);
+    /* 幂次取样：指数越大越偏向深层（0 = 深层细沙），表层大颗粒更稀 */
+    var depth = Math.pow(Math.random(), 2.6);
     return {
       x: x,
       y: y,
       vx: 0,
       vy: 0,
       depth: depth,
-      size: 0.12 + depth * 0.4 + Math.random() * 0.16,
-      alpha: (0.16 + Math.random() * 0.34) * (0.6 + depth * 0.9),
+      size: 0.12 + depth * 0.42 + Math.random() * 0.16,
+      alpha: (0.16 + Math.random() * 0.34) * (0.72 + depth * 0.82),
       phase: Math.random() * Math.PI * 2,
       twinkle: 0.35 + Math.random() * 0.9,
       bobF: 0.8 + Math.random() * 1.9,
@@ -236,8 +237,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 7000 : 13000;
-    return Math.round(Math.min(cap, Math.max(4400, (W * H) / 150)));
+    var cap = W < 760 ? 7400 : 13400;
+    return Math.round(Math.min(cap, Math.max(4600, (W * H) / 144)));
   }
 
   function seed() {
@@ -246,7 +247,7 @@
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
     }
-    var nn = W < 760 ? 460 : 1000;
+    var nn = W < 760 ? 300 : 640;
     near.length = 0;
     for (var j = 0; j < nn; j++) {
       near.push(newNear(Math.random() * W, Math.random() * H));
@@ -331,10 +332,10 @@
     for (i = 0; i < grains.length; i++) {
       g = grains[i];
       var f = flow(g.x, g.y);
-      var speed = 0.14 + g.depth * 0.5;
+      var speed = 0.3 + g.depth * 0.95;
 
-      g.vx += (f[0] * speed - g.vx) * 0.026;
-      g.vy += (f[1] * speed - g.vy) * 0.026;
+      g.vx += (f[0] * speed - g.vx) * 0.042;
+      g.vy += (f[1] * speed - g.vy) * 0.042;
 
       if (mouse.inside && g.depth >= depthGate) {
         var dx = g.x - mouse.x;
@@ -352,11 +353,11 @@
         }
       }
 
-      if (g.vx > 2.2) g.vx = 2.2; else if (g.vx < -2.2) g.vx = -2.2;
-      if (g.vy > 2.2) g.vy = 2.2; else if (g.vy < -2.2) g.vy = -2.2;
+      if (g.vx > 4) g.vx = 4; else if (g.vx < -4) g.vx = -4;
+      if (g.vy > 4) g.vy = 4; else if (g.vy < -4) g.vy = -4;
 
       g.x += g.vx;
-      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.1 * (0.4 + g.depth);
+      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.12 * (0.4 + g.depth);
 
       if (g.x < -20) { g.x = W + 20; g.y = Math.random() * H; }
       else if (g.x > W + 20) { g.x = -20; g.y = Math.random() * H; }
@@ -371,8 +372,8 @@
     for (i = 0; i < near.length; i++) {
       g = near[i];
       var fn = flow(g.x * 0.7, g.y * 0.7);
-      g.vx += (fn[0] * g.speed * 0.5 - g.vx) * 0.03;
-      g.vy += (fn[1] * g.speed * 0.5 - g.vy) * 0.03;
+      g.vx += (fn[0] * g.speed * 0.85 - g.vx) * 0.045;
+      g.vy += (fn[1] * g.speed * 0.85 - g.vy) * 0.045;
 
       if (mouse.inside) {
         var ndx = g.x - mouse.x;
@@ -390,11 +391,11 @@
         }
       }
 
-      if (g.vx > 1.8) g.vx = 1.8; else if (g.vx < -1.8) g.vx = -1.8;
-      if (g.vy > 1.8) g.vy = 1.8; else if (g.vy < -1.8) g.vy = -1.8;
+      if (g.vx > 3) g.vx = 3; else if (g.vx < -3) g.vx = -3;
+      if (g.vy > 3) g.vy = 3; else if (g.vy < -3) g.vy = -3;
 
       g.x += g.vx;
-      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.16;
+      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.2;
 
       if (g.x < -12) { g.x = W + 12; g.y = Math.random() * H; }
       else if (g.x > W + 12) { g.x = -12; g.y = Math.random() * H; }
