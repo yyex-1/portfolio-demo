@@ -7,14 +7,15 @@
   --frame-bg: #f7f8f6;
   --ink: #0a0d11;
   --muted: #47525c;
-  --line: rgba(10, 13, 17, .34);          /* 边框：低透明度细线，不再用实黑 */
+  --line: var(--frame-bg);               /* 边框与画布同色：没有硬线，只剩一圈厚纸边 */
   --hair: rgba(10, 13, 17, .15);
+  --frame-w: 5px;                          /* 边框加粗 */
   --grain-opacity: .34;
   --gap: clamp(26px, 3vw, 44px);          /* 内容与边框的距离 */
   --ease: cubic-bezier(.16, .84, .28, 1);
 
-  /* 标题：细无衬线（psaholic 式 light sans） */
-  --ff-title: 'Helvetica Neue', 'Segoe UI Light', 'Segoe UI', 'Inter', 'PingFang SC', 'Microsoft YaHei Light', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+  /* 标题：极细无衬线（psaholic 式 hairline sans） */
+  --ff-title: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight', 'Helvetica Neue Light', 'Helvetica Neue', 'Segoe UI Light', 'Segoe UI Semilight', 'Segoe UI', 'Inter', 'PingFang SC', 'DengXian Light', '等线 Light', 'DengXian', 'Microsoft YaHei UI Light', 'Microsoft YaHei Light', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
   /* 中文标题：宋体系（衬线的“书卷气”） */
   --ff-han: 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif SC', 'SimSun', 'STZhongsong', serif;
   /* 拉丁标题：同类衬线，保证中英一致 */
@@ -28,7 +29,7 @@ html[data-theme="dark"] {
   --frame-bg: #12151b;
   --ink: #f2f4f7;
   --muted: #a3adb8;
-  --line: rgba(242, 244, 247, .3);
+  --line: var(--frame-bg);
   --hair: rgba(242, 244, 247, .18);
   --grain-opacity: .13;
 }
@@ -67,7 +68,7 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   height: 100%;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: var(--frame-w) solid var(--line);
   background: var(--frame-bg);
   transition: background-color .3s ease, border-color .3s ease;
 }
@@ -117,9 +118,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   margin: 0;
   font-family: var(--ff-title);
   font-size: clamp(30px, 3.5vw, 48px);
-  font-weight: 300;
-  letter-spacing: .01em;
-  line-height: 1.06;
+  font-weight: 100;
+  letter-spacing: .015em;
+  line-height: 1.08;
   text-indent: -.02em;
 }
 .brand-name a { color: inherit; }
@@ -261,9 +262,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   margin: 0;
   font-family: var(--ff-title);
   font-size: clamp(38px, 5vw, 72px);
-  font-weight: 300;
-  letter-spacing: .015em;
-  line-height: 1.1;
+  font-weight: 100;
+  letter-spacing: .02em;
+  line-height: 1.12;
   transition: color .3s ease, transform .45s var(--ease), opacity .3s ease;
 }
 .proj-item:hover .proj-title,
@@ -275,7 +276,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   margin: 9px 0 0;
   font-family: var(--ff-sans);
   font-size: 9px;
-  font-weight: 400;
+  font-weight: 300;
   letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--ink);
@@ -382,8 +383,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .contact-note .ilink:hover { border-color: var(--ink); color: var(--ink); }
 
-/* ---------- FAQ / Copycats：右侧文档栏（同 projects 的边框淡出处理） ---------- */
-.view-faq, .view-copycats {
+/* ---------- FAQ：右侧文档栏（同 projects 的边框淡出处理） ---------- */
+.view-faq {
   display: flex;
   justify-content: flex-end;
 }

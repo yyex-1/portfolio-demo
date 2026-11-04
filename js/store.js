@@ -148,12 +148,7 @@
           { label: 'The Book of Shaders', url: 'https://thebookofshaders.com/' }
         ]
       }
-    ],
-    copycats: {
-      note: '参考了本站布局与视觉的作品会列在这里。',
-      desc: '借鉴学习是正常的事，我也不排斥别人模仿着做自己的作品集——但请直接复制源码后改成完全一样、再署上自己的名字。如果你发现自己的网站被抄袭了，或者想告诉我你做了类似的作品，欢迎写信给我：',
-      sites: []
-    }
+    ]
   };
 
   // ---- 内部状态 ----
@@ -173,7 +168,6 @@
       categories: Array.isArray(data.categories) ? data.categories : deepClone(DEFAULT_DATA.categories),
       projects: Array.isArray(data.projects) ? data.projects : deepClone(DEFAULT_DATA.projects),
       faq: Array.isArray(data.faq) ? data.faq : deepClone(DEFAULT_DATA.faq),
-      copycats: data.copycats ? Object.assign({}, DEFAULT_DATA.copycats, data.copycats) : deepClone(DEFAULT_DATA.copycats),
     };
   }
 
@@ -258,9 +252,8 @@
     state.experience.splice(index, 1); save(); notify('experience');
   }
 
-  // ---- FAQ / Copycats ----
+  // ---- FAQ ----
   function getFaq() { return state.faq; }
-  function getCopycats() { return state.copycats; }
 
   // ---- SiteInfo ----
   function getSiteInfo() { return state.siteInfo; }
@@ -312,7 +305,6 @@
     updateSiteInfo: updateSiteInfo,
     getCategories: getCategories,
     getFaq: getFaq,
-    getCopycats: getCopycats,
     addCategory: addCategory,
     updateCategory: updateCategory,
     deleteCategory: deleteCategory,
