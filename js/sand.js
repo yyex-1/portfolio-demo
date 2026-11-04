@@ -37,7 +37,7 @@
   var bg = {
     ox: 0, oy: 0, vx: 0, vy: 0,
     ang: -2.35, tAng: -2.35,
-    ramp: 1, nextTurn: 2.6
+    ramp: 1, nextTurn: 2
   };
   var dtCache = 16;
 
@@ -51,11 +51,12 @@
       var jump = (Math.random() < 0.5 ? -1 : 1) * Math.PI * (0.25 + Math.random() * 0.55);
       bg.tAng += jump;
       bg.ramp = 0;
-      bg.nextTurn = 3.4 + Math.random() * 4.8;
+      bg.nextTurn = 2;
     }
 
-    /* 加速过程：0 → 1 用约 1.8 秒，smoothstep 收尾所以尾段是减速 */
-    bg.ramp = Math.min(1, bg.ramp + sec / 1.8);
+    /* 加速过程：0 → 1 用约 1.15 秒（2s 换一次向，留一段满速巡航），
+     * smoothstep 收尾所以尾段是减速 */
+    bg.ramp = Math.min(1, bg.ramp + sec / 1.15);
     var r = bg.ramp;
     var ease = 0.3 + 0.7 * (r * r * (3 - 2 * r));
 
