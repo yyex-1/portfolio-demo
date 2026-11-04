@@ -66,13 +66,13 @@
         : '';
 
       var meta = [];
+      if (p.date) meta.push(esc(p.date));
       if (p.tags && p.tags.length) meta.push(esc(p.tags.join(' / ')));
       if (p.githubUrl) meta.push('<a class="proj-code" href="' + esc(p.githubUrl) + '" target="_blank" rel="noopener noreferrer">CODE</a>');
 
       var item =
         '<h2 class="proj-title">' + esc(p.title) + '</h2>' +
-        (meta.length ? '<p class="proj-meta">' + meta.join('<span class="meta-sep"> / </span>') + '</p>' : '') +
-        '<p class="proj-desc">' + esc(p.desc) + '</p>';
+        (meta.length ? '<p class="proj-meta">' + meta.join('<span class="meta-sep"> / </span>') + '</p>' : '');
 
       var open = p.demoUrl
         ? '<a class="proj-item" href="' + esc(p.demoUrl) + '" target="_blank" rel="noopener noreferrer">'

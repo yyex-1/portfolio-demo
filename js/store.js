@@ -6,7 +6,7 @@
 (function (global) {
   'use strict';
 
-  var STORAGE_KEY = 'bc-portfolio-v1';
+  var STORAGE_KEY = 'bc-portfolio-v2';
   var ADMIN_PASSWORD = 'WORLDISWORTH0924';
 
   // ---- 默认数据 ----
@@ -49,14 +49,80 @@
       {
         id: 'leaflet-global-map',
         title: 'Leaflet全球交互地图',
+        date: '2025.10',
         desc: '基于Leaflet与GeoJSON实现的可交互全球地图程序，支持点位标记、信息弹窗，适配多端。',
         coverUrl: '',
         demoUrl: 'https://willowy-paletas-04cf3b.netlify.app/',
         githubUrl: '',
         tags: ['Leaflet', 'GeoJSON', 'JavaScript', 'HTML/CSS'],
-        category: 'Web应用',
+        category: '可视化',
         featured: true,
         sortIndex: 0
+      },
+      {
+        id: 'realtime-whiteboard',
+        title: '实时协同白板',
+        date: '2025.06',
+        desc: '基于 WebSocket 的多人实时白板，支持笔迹同步、撤销重做与房间分享。',
+        coverUrl: '',
+        demoUrl: '',
+        githubUrl: '',
+        tags: ['WebSocket', 'Canvas', 'Node.js'],
+        category: 'Web应用',
+        featured: true,
+        sortIndex: 1
+      },
+      {
+        id: 'data-dashboard',
+        title: '数据可视化大屏',
+        date: '2025.03',
+        desc: '面向业务监控的可视化大屏，ECharts 自定义主题与增量渲染，万级数据流畅交互。',
+        coverUrl: '',
+        demoUrl: '',
+        githubUrl: '',
+        tags: ['ECharts', 'Vue3', 'DataV'],
+        category: '可视化',
+        featured: true,
+        sortIndex: 2
+      },
+      {
+        id: 'campus-platform',
+        title: '校园活动平台',
+        date: '2024.11',
+        desc: '校园活动发布与报名一体化平台，从 0 到 1 完成需求分析、架构设计与前后端协调。',
+        coverUrl: '',
+        demoUrl: '',
+        githubUrl: '',
+        tags: ['React', 'Node.js', 'MongoDB'],
+        category: 'Web应用',
+        featured: true,
+        sortIndex: 3
+      },
+      {
+        id: 'miniui-components',
+        title: 'MiniUI 组件库',
+        date: '2024.06',
+        desc: '轻量级 Vue3 组件库，20+ 高频组件，完整的主题定制与按需引入方案。',
+        coverUrl: '',
+        demoUrl: '',
+        githubUrl: '',
+        tags: ['Vue3', 'TypeScript', 'Vite'],
+        category: '工具',
+        featured: true,
+        sortIndex: 4
+      },
+      {
+        id: 'tech-blog',
+        title: '技术博客与文章集',
+        date: '2024.01',
+        desc: '静态站点生成的前端博客，记录学习笔记与工程实践，SSR 与 SEO 优化。',
+        coverUrl: '',
+        demoUrl: '',
+        githubUrl: '',
+        tags: ['VitePress', 'Markdown', 'SSR'],
+        category: '工具',
+        featured: true,
+        sortIndex: 5
       }
     ]
   };
