@@ -21,7 +21,7 @@
   var time = 0;
   var visible = true;
   var sprite = null, spriteKey = '';
-  var mouse = { x: -1e4, y: -1e4, px: -1e4, py: -1e4, vx: 0, vy: 0, inside: false };
+  var mouse = { x: -1e4, y: -1e4, px: -1e4, py: -1e4, vx: 0, vy: 0, inside: false, dwell: 0 };
 
   function isDark() {
     return root.getAttribute('data-theme') === 'dark';
@@ -66,8 +66,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 2800 : 4400;
-    return Math.round(Math.min(cap, Math.max(1500, (W * H) / 480)));
+    var cap = W < 760 ? 6200 : 10400;
+    return Math.round(Math.min(cap, Math.max(3200, (W * H) / 215)));
   }
 
   function seed() {
@@ -78,29 +78,44 @@
     }
   }
 
-  /* ---------- 风场：正弦涡流 + 主风向 ---------- */
+  /* ---------- 风场：正弦涡流 + 主风向（偏快，流动肉眼可见） ---------- */
   function flow(x, y) {
-    var fx = Math.sin(y * 0.0032 + time * 0.55) * 0.22 +
-             Math.sin((x + y * 0.6) * 0.0015 - time * 0.32) * 0.14 -
-             0.40;
-    var fy = Math.cos(x * 0.0027 + time * 0.48) * 0.17 +
-             Math.cos((x - y) * 0.0019 + time * 0.24) * 0.10;
+    var fx = Math.sin(y * 0.0032 + time * 0.9) * 0.45 +
+             Math.sin((x + y * 0.6) * 0.0015 - time * 0.55) * 0.28 -
+             0.85;
+    var fy = Math.cos(x * 0.0027 + time * 0.8) * 0.34 +
+             Math.cos((x - y) * 0.0019 + time * 0.42) * 0.2;
     return [fx, fy];
   }
 
-  /* ---------- 物理步进 ---------- */
-  function step() {
-    var R = 150, R2 = R * R;
+  /* ---------- 物理步进 ----------
+   * 鼠标驻留穿透：刚悬停只推动近景（depth 高）沙粒；
+   * 停留越久，作用半径越大、逐渐波及远景细沙；快速移动或离开则衰减。 */
+  function step(dt) {
+    var DWELL_MAX = 2.4;
+
+    if (mouse.inside) {
+      var moving = Math.abs(mouse.vx) + Math.abs(mouse.vy);
+      if (moving < 1.4) mouse.dwell = Math.min(DWELL_MAX, mouse.dwell + dt / 1000);
+      else mouse.dwell = Math.max(0, mouse.dwell - dt / 1000 * 4);
+    } else {
+      mouse.dwell = Math.max(0, mouse.dwell - dt / 1000 * 2.2);
+    }
+
+    var dwellN = mouse.dwell / DWELL_MAX;
+    var R = 120 + dwellN * 150, R2 = R * R;
+    var depthGate = 0.6 - dwellN * 0.6;   // 0.6 → 0：停留越久，越深的沙也被扰动
+    var dwellBoost = 0.75 + dwellN * 0.45;
 
     for (var i = 0; i < grains.length; i++) {
       var g = grains[i];
       var f = flow(g.x, g.y);
-      var speed = 0.22 + g.depth * 0.95;
+      var speed = 0.4 + g.depth * 1.7;
 
-      g.vx += (f[0] * speed - g.vx) * 0.035;
-      g.vy += (f[1] * speed - g.vy) * 0.035;
+      g.vx += (f[0] * speed - g.vx) * 0.055;
+      g.vy += (f[1] * speed - g.vy) * 0.055;
 
-      if (mouse.inside) {
+      if (mouse.inside && g.depth >= depthGate) {
         var dx = g.x - mouse.x;
         var dy = g.y - mouse.y;
         var d2 = dx * dx + dy * dy;
@@ -108,7 +123,7 @@
           var d = Math.sqrt(d2) || 1;
           var k = 1 - d / R;
           k = k * k;
-          var push = k * (0.5 + g.depth * 0.95);
+          var push = k * (0.5 + g.depth * 0.95) * dwellBoost;
           g.vx += (dx / d) * push;
           g.vy += (dy / d) * push;
           g.vx += mouse.vx * 0.055 * k;
@@ -116,8 +131,8 @@
         }
       }
 
-      if (g.vx > 4.2) g.vx = 4.2; else if (g.vx < -4.2) g.vx = -4.2;
-      if (g.vy > 4.2) g.vy = 4.2; else if (g.vy < -4.2) g.vy = -4.2;
+      if (g.vx > 7) g.vx = 7; else if (g.vx < -7) g.vx = -7;
+      if (g.vy > 7) g.vy = 7; else if (g.vy < -7) g.vy = -7;
 
       g.x += g.vx;
       g.y += g.vy;
@@ -162,7 +177,7 @@
     var dt = Math.min(48, (now - last) || 16);
     last = now;
     time += dt / 1000;
-    step();
+    step(dt);
     paint();
   }
 
@@ -224,7 +239,7 @@
       g.vy = Math.sin(ang) * spd - 0.3;
       grains.push(g);
     }
-    if (grains.length > 5200) grains.splice(0, grains.length - 5200);
+    if (grains.length > 11200) grains.splice(0, grains.length - 11200);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {
