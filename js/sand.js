@@ -213,7 +213,7 @@
       vy: 0,
       depth: depth,
       size: 0.12 + depth * 0.42 + Math.random() * 0.16,
-      alpha: (0.16 + Math.random() * 0.34) * (0.72 + depth * 0.82),
+      alpha: (0.18 + Math.random() * 0.36) * (0.72 + depth * 0.82),
       phase: Math.random() * Math.PI * 2,
       twinkle: 0.35 + Math.random() * 0.9,
       bobF: 0.8 + Math.random() * 1.9,
@@ -237,8 +237,8 @@
   }
 
   function targetCount() {
-    var cap = W < 760 ? 9800 : 18000;
-    return Math.round(Math.min(cap, Math.max(6200, (W * H) / 100)));
+    var cap = W < 760 ? 12000 : 22000;
+    return Math.round(Math.min(cap, Math.max(7600, (W * H) / 76)));
   }
 
   function seed() {
@@ -247,7 +247,7 @@
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
     }
-    var nn = W < 760 ? 420 : 900;
+    var nn = W < 760 ? 520 : 1100;
     near.length = 0;
     for (var j = 0; j < nn; j++) {
       near.push(newNear(Math.random() * W, Math.random() * H));
@@ -533,8 +533,8 @@
       g.vy = Math.sin(ang) * (0.6 + Math.random() * 2) - 0.6;
       near.push(g);
     }
-    if (grains.length > 18600) grains.splice(0, grains.length - 18600);
-    if (near.length > 1500) near.splice(0, near.length - 1500);
+    if (grains.length > 22800) grains.splice(0, grains.length - 22800);
+    if (near.length > 1750) near.splice(0, near.length - 1750);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {
