@@ -25,7 +25,9 @@
       { id: 'home', label: 'Home' },
       { id: 'projects', label: 'Projects' },
       { id: 'info', label: 'Info' },
-      { id: 'contact', label: 'Contact' }
+      { id: 'contact', label: 'Contact' },
+      { id: 'faq', label: 'FAQ' },
+      { id: 'copycats', label: 'Copycats' }
     ].map(function (n) {
       return '<a href="#' + n.id + '" class="nav-link" data-view="' + n.id + '"><span>' + n.label + '</span></a>';
     }).join('');
@@ -139,11 +141,46 @@
     return view('contact', inner);
   }
 
+  // ---- FAQ：右侧文档栏，问粗答细 ----
+  function renderFaq() {
+    var faq = Store.getFaq() || [];
+    var rows = faq.map(function (f) {
+      var links = (f.links || []).map(function (l) {
+        return '<a class="doc-link" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer">' + esc(l.label) + '</a>';
+      }).join('');
+      return '<div class="faq-item">' +
+          '<h3 class="faq-q">' + esc(f.q) + '</h3>' +
+          '<p class="faq-a">' + esc(f.a) + '</p>' +
+          (links ? '<div class="faq-links">' + links + '</div>' : '') +
+        '</div>';
+    }).join('');
+
+    var inner = '<div class="doc-col scrollable">' + rows + '</div>';
+    return view('faq', inner);
+  }
+
+  // ---- Copycats：右侧文档栏，声明 + 站点列表 ----
+  function renderCopycats() {
+    var cc = Store.getCopycats() || {};
+    var sites = (cc.sites || []).map(function (s) {
+      return '<li><a class="doc-link" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.url) + '</a> by ' + esc(s.author || '') + '</li>';
+    }).join('');
+
+    var inner =
+      '<div class="doc-col scrollable">' +
+        '<h3 class="doc-title">' + esc(cc.note || 'Copycats') + '</h3>' +
+        '<p class="doc-p">' + esc(cc.desc || '') + '</p>' +
+        (cc.email !== false ? '<p class="doc-p"><a class="doc-link" href="mailto:' + esc((Store.getSiteInfo() || {}).email || '') + '">' + esc((Store.getSiteInfo() || {}).email || '') + '</a></p>' : '') +
+        (sites ? '<ul class="doc-list">' + sites + '</ul>' : '<p class="doc-p doc-dim">（暂无记录）</p>') +
+      '</div>';
+    return view('copycats', inner);
+  }
+
   // ---- 全量渲染 ----
   function renderContent() {
     var el = document.getElementById('content');
     if (!el) return;
-    el.innerHTML = renderHome() + renderProjects() + renderInfo() + renderContact();
+    el.innerHTML = renderHome() + renderProjects() + renderInfo() + renderContact() + renderFaq() + renderCopycats();
 
     if (global.Admin && global.Admin.isActive) {
       global.Admin.mountCardActions();

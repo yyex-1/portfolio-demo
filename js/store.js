@@ -6,7 +6,7 @@
 (function (global) {
   'use strict';
 
-  var STORAGE_KEY = 'bc-portfolio-v2';
+  var STORAGE_KEY = 'bc-portfolio-v3';
   var ADMIN_PASSWORD = 'WORLDISWORTH0924';
 
   // ---- 默认数据 ----
@@ -124,7 +124,36 @@
         featured: true,
         sortIndex: 5
       }
-    ]
+    ],
+    faq: [
+      {
+        q: '这个背景效果是怎么做的？',
+        a: '背景是用 Canvas 绘制的程序化沙丘：多倍频噪声生成地形高度场，按坡度明暗决定沙点的疏密，没有用任何贴图。沙粒有海浪式风场，鼠标停留越久、能搅动越深的沙层。'
+      },
+      {
+        q: '可以看一下源码吗？',
+        a: '本站托管在 GitHub 上，欢迎 Star 与交流。'
+      },
+      {
+        q: '可以使用你的代码吗？',
+        a: '布局与视觉设计请不要直接整站搬运；技术实现的思路欢迎参考和讨论，注明出处即可。'
+      },
+      {
+        q: '你是如何学习前端的？',
+        a: '书籍、文档和开源项目，边做边学。推荐几个常翻的资源：',
+        links: [
+          { label: 'MDN Web Docs', url: 'https://developer.mozilla.org/zh-CN/' },
+          { label: 'Vue 官方文档', url: 'https://cn.vuejs.org/' },
+          { label: 'ECharts 示例库', url: 'https://echarts.apache.org/examples/zh/' },
+          { label: 'The Book of Shaders', url: 'https://thebookofshaders.com/' }
+        ]
+      }
+    ],
+    copycats: {
+      note: '参考了本站布局与视觉的作品会列在这里。',
+      desc: '借鉴学习是正常的事，我也不排斥别人模仿着做自己的作品集——但请直接复制源码后改成完全一样、再署上自己的名字。如果你发现自己的网站被抄袭了，或者想告诉我你做了类似的作品，欢迎写信给我：',
+      sites: []
+    }
   };
 
   // ---- 内部状态 ----
@@ -143,6 +172,8 @@
       experience: Array.isArray(data.experience) ? data.experience : deepClone(DEFAULT_DATA.experience),
       categories: Array.isArray(data.categories) ? data.categories : deepClone(DEFAULT_DATA.categories),
       projects: Array.isArray(data.projects) ? data.projects : deepClone(DEFAULT_DATA.projects),
+      faq: Array.isArray(data.faq) ? data.faq : deepClone(DEFAULT_DATA.faq),
+      copycats: data.copycats ? Object.assign({}, DEFAULT_DATA.copycats, data.copycats) : deepClone(DEFAULT_DATA.copycats),
     };
   }
 
@@ -227,6 +258,10 @@
     state.experience.splice(index, 1); save(); notify('experience');
   }
 
+  // ---- FAQ / Copycats ----
+  function getFaq() { return state.faq; }
+  function getCopycats() { return state.copycats; }
+
   // ---- SiteInfo ----
   function getSiteInfo() { return state.siteInfo; }
   function updateSiteInfo(updates) {
@@ -276,6 +311,8 @@
     getSiteInfo: getSiteInfo,
     updateSiteInfo: updateSiteInfo,
     getCategories: getCategories,
+    getFaq: getFaq,
+    getCopycats: getCopycats,
     addCategory: addCategory,
     updateCategory: updateCategory,
     deleteCategory: deleteCategory,
