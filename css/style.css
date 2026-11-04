@@ -7,12 +7,14 @@
   --frame-bg: #f7f8f6;
   --ink: #0a0d11;
   --muted: #47525c;
-  --line: #0a0d11;
+  --line: rgba(10, 13, 17, .34);          /* 边框：低透明度细线，不再用实黑 */
   --hair: rgba(10, 13, 17, .15);
   --grain-opacity: .34;
-  --gap: clamp(18px, 2.2vw, 30px);
+  --gap: clamp(26px, 3vw, 44px);          /* 内容与边框的距离 */
   --ease: cubic-bezier(.16, .84, .28, 1);
 
+  /* 标题：细无衬线（psaholic 式 light sans） */
+  --ff-title: 'Helvetica Neue', 'Segoe UI Light', 'Segoe UI', 'Inter', 'PingFang SC', 'Microsoft YaHei Light', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
   /* 中文标题：宋体系（衬线的“书卷气”） */
   --ff-han: 'Songti SC', 'STSong', 'Source Han Serif SC', 'Noto Serif SC', 'SimSun', 'STZhongsong', serif;
   /* 拉丁标题：同类衬线，保证中英一致 */
@@ -26,7 +28,7 @@ html[data-theme="dark"] {
   --frame-bg: #12151b;
   --ink: #f2f4f7;
   --muted: #a3adb8;
-  --line: #f2f4f7;
+  --line: rgba(242, 244, 247, .3);
   --hair: rgba(242, 244, 247, .18);
   --grain-opacity: .13;
 }
@@ -113,12 +115,12 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .brand-name {
   margin: 0;
-  font-family: var(--ff-han);
+  font-family: var(--ff-title);
   font-size: clamp(30px, 3.5vw, 48px);
-  font-weight: 700;
-  letter-spacing: .035em;
+  font-weight: 300;
+  letter-spacing: .01em;
   line-height: 1.06;
-  text-indent: -.04em;
+  text-indent: -.02em;
 }
 .brand-name a { color: inherit; }
 
@@ -233,17 +235,21 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .manifesto-line + .manifesto-line:not(:first-child) { color: var(--muted); }
 
-/* ---------- Projects：大字列表（右移留出呼吸位） ---------- */
+/* ---------- Projects：大字列表（右列全高，滚动时在边框内侧淡出） ---------- */
 .view-projects {
   display: flex;
   justify-content: flex-end;
-  padding: calc(var(--gap) + clamp(96px, 15.5vh, 150px)) calc(var(--gap) + clamp(44px, 8.5vw, 130px)) calc(var(--gap) + 26px) var(--gap);
+  padding: 0 calc(var(--gap) + clamp(44px, 8.5vw, 130px)) 0 var(--gap);
 }
 .view-projects #projects-drop-mount { flex: none; width: 100%; }
 #projects-drop-mount:empty { display: none; }
 .proj-list {
   width: min(880px, 74%);
   height: 100%;
+  padding: calc(var(--gap) + 14px) 0 calc(var(--gap) + 10px);
+  /* 边框透明度处理：列表顶端/底端渐隐，内容像从边框下滑过 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--gap) + 64px), #000 calc(100% - var(--gap) - 64px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--gap) + 64px), #000 calc(100% - var(--gap) - 64px), transparent 100%);
 }
 .proj { margin: 0 0 clamp(30px, 6.2vh, 62px); }
 .proj-item {
@@ -253,12 +259,12 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .proj-title {
   margin: 0;
-  font-family: var(--ff-han);
-  font-size: clamp(38px, 5.4vw, 78px);
-  font-weight: 700;
-  letter-spacing: .02em;
-  line-height: 1.08;
-  transition: color .3s ease, transform .45s var(--ease);
+  font-family: var(--ff-title);
+  font-size: clamp(38px, 5vw, 72px);
+  font-weight: 300;
+  letter-spacing: .015em;
+  line-height: 1.1;
+  transition: color .3s ease, transform .45s var(--ease), opacity .3s ease;
 }
 .proj-item:hover .proj-title,
 .proj-item:focus-visible .proj-title {
@@ -266,11 +272,11 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   transform: translateX(-6px);
 }
 .proj-meta {
-  margin: 10px 0 0;
+  margin: 9px 0 0;
   font-family: var(--ff-sans);
-  font-size: 9.5px;
-  font-weight: 700;
-  letter-spacing: .18em;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--ink);
   overflow: hidden;
@@ -488,8 +494,8 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .nav-link { margin-bottom: 12px; font-size: 8.5px; }
 
   .manifesto { left: auto; right: 16px; width: min(320px, 88%); bottom: 46px; text-align: right; }
-  .view-projects { padding: 200px 16px 58px; justify-content: flex-end; }
-  .proj-list { width: 100%; }
+  .view-projects { padding: 0 16px; justify-content: flex-end; }
+  .proj-list { width: 100%; padding: 76px 0 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); }
   .proj-title { font-size: clamp(26px, 7.4vw, 40px); }
   .proj-item:hover .proj-title { transform: none; }
   .info-top { top: 18px; right: 16px; }
