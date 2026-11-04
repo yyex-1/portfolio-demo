@@ -254,12 +254,33 @@
     }
   }
 
-  /* ================= 风场（浮沙用） ================= */
+  /* ================= 风场（浮沙用） =================
+   * 海浪的传播方向每 15 秒随机换一次；换向后用几百毫秒平滑过渡，
+   * 免得整片沙子瞬间“打闪”。 */
+  var wave = { ang: 0.4, tAng: 0.4, next: 15 };
+  var WAVE_K = 0.0044;
+
+  function advanceWave(dt) {
+    if (dt <= 0) return;
+    wave.next -= dt / 1000;
+    if (wave.next <= 0) {
+      wave.tAng = Math.random() * Math.PI * 2;
+      wave.next = 15;
+    }
+    /* 最短路径插值，避免绕过 0/2π 时反向大转一圈 */
+    var d = wave.tAng - wave.ang;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    wave.ang += d * Math.min(1, 0.045 * (dt / 16.7));
+  }
+
   function flow(x, y) {
-    var ph = x * 0.0042 + y * 0.0018 - time * 1.3;
-    var ph2 = (x + y) * 0.0011 - time * 0.5;
-    var fx = Math.cos(ph) * 0.55 + Math.cos(ph2) * 0.22 - 0.45;
-    var fy = Math.sin(ph) * 0.5 + Math.sin(ph2) * 0.16;
+    var ca = Math.cos(wave.ang), sa = Math.sin(wave.ang);
+    var ph = (x * ca + y * sa) * WAVE_K - time * 1.3;
+    var ph2 = (x * -sa + y * ca) * 0.0018 - time * 0.5;
+    /* 主漂移也跟着浪向走（与浪行进方向相反，和原来的手感一致） */
+    var fx = Math.cos(ph) * 0.55 + Math.cos(ph2) * 0.22 - ca * 0.45;
+    var fy = Math.sin(ph) * 0.5 + Math.sin(ph2) * 0.16 - sa * 0.45;
     return [fx, fy];
   }
 
@@ -312,6 +333,8 @@
   /* ================= 物理步进 ================= */
   function step(dt) {
     var DWELL_MAX = 3.4;
+
+    advanceWave(dt);
 
     if (mouse.inside) {
       var moving = Math.abs(mouse.vx) + Math.abs(mouse.vy);
