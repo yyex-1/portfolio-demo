@@ -133,7 +133,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .brand-name {
   margin: 0;
   font-family: var(--ff-title);
-  font-size: 4vw;   /* 窗口宽度的 4% */
+  font-size: 3vw;   /* 窗口宽度的 3% */
   font-weight: 200;
   letter-spacing: .01em;
   line-height: 1.06;
@@ -230,7 +230,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .manifesto {
   position: absolute;
   right: var(--gap);
-  bottom: calc(var(--gap) + 26px);
+  bottom: calc(var(--gap) - 16px);   /* 整体下调两行 */
   width: min(268px, 43%);
   display: flex;
   flex-direction: column;
@@ -263,12 +263,11 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-list {
   width: min(880px, 74%);
   height: 100%;
-  /* 顶端与"张同学"的下一行（FRONTEND DEVELOPER 副标题）平齐：
-     品牌区顶 4.16vw + 名字行高 4.24vw + 副标题上边距 12px - 画框顶 2.08vw ≈ 6.3vw + 12px */
-  padding: calc(6.3vw + 12px) 0 calc(var(--gap) + 10px);
+  /* 顶部：比"张同学"的下一行再低一行（3vw 字号的一行 ≈ 3.3vw）；列表贯穿全高 */
+  padding: calc(10.6vw + 12px) 0 calc(var(--gap) + 10px);
   /* 边框透明度处理：列表顶端/底端渐隐，内容像从边框下滑过 */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(6.3vw + 60px), #000 calc(100% - var(--gap) - 64px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(6.3vw + 60px), #000 calc(100% - var(--gap) - 64px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 40px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 40px), transparent 100%);
 }
 .proj { margin: 0 0 clamp(30px, 6.2vh, 62px); }
 .proj-item {
@@ -279,7 +278,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-title {
   margin: 0;
   font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
-  font-size: 4vw;   /* 窗口宽度的 4% */
+  font-size: 3vw;   /* 窗口宽度的 3% */
   font-weight: 200;
   /* 描边蚀细：用底色描边把笔画再削细一档（雅黑 Light 已是雅黑最细字重） */
   -webkit-text-stroke: .6px var(--frame-bg);
@@ -411,9 +410,10 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .doc-col {
   width: min(600px, 48%);
   height: 100%;
-  padding: calc(var(--gap) + 34px) 0 calc(var(--gap) + 22px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--gap) + 58px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(var(--gap) + 58px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  /* 比"张同学"低 2 行（3vw 字号 × 2 行 ≈ 6.4vw + 品牌顶 4.16vw - 画框顶 2.08vw ≈ 8.4vw） */
+  padding: 8.4vw 0 calc(var(--gap) + 22px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(8.4vw - 6px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(8.4vw - 6px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
 }
 .faq-item { margin-bottom: 40px; }
 .faq-q {
@@ -426,8 +426,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .faq-a {
   margin: 0;
-  font-size: 10.5px;
-  font-weight: 400;
+  font-size: 11px;
+  font-weight: 700;
   line-height: 1.85;
   letter-spacing: .02em;
   color: var(--ink);
@@ -436,8 +436,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .doc-link {
   display: inline-block;
   margin: 0 14px 5px 0;
-  font-size: 10px;
-  font-weight: 400;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: .03em;
   color: var(--ink);
   text-decoration: underline;
