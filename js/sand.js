@@ -28,7 +28,28 @@
   var mouse = { x: -1e4, y: -1e4, px: -1e4, py: -1e4, vx: 0, vy: 0, inside: false, dwell: 0 };
 
   var TEX_SCALE = 1.6;   // 纹理比视口大，图案不在每屏重复
-  var BANDS = 7;         // 等高带层数
+
+  /* 背景两层：方向、速度、缩放都不同；速度用低通缓动，产生黏滞拖拽感 */
+  var LAYERS = [
+    { ox: 0, oy: 0, vx: -7, vy: -4.2, bx: -7, by: -4.2, a: 0.62, sc: 1.0 },
+    { ox: 640, oy: 520, vx: 4.6, vy: 3.4, bx: 4.6, by: 3.4, a: 0.44, sc: 1.16 }
+  ];
+  var dtCache = 16;
+
+  function advanceLayers(dt) {
+    var k = dt / 16.7;
+    for (var i = 0; i < LAYERS.length; i++) {
+      var L = LAYERS[i];
+      /* 目标速度本身缓慢摆动 → 时而加速、时而几乎停住 */
+      var txx = L.bx + Math.sin(time * 0.16 + i * 2.1) * 3.4;
+      var tyy = L.by + Math.cos(time * 0.12 + i * 1.7) * 2.8;
+      /* 低通跟踪：速度变化滞后于目标，就是"黏"的来源 */
+      L.vx += (txx - L.vx) * Math.min(1, 0.014 * k);
+      L.vy += (tyy - L.vy) * Math.min(1, 0.014 * k);
+      L.ox += L.vx * k;
+      L.oy += L.vy * k;
+    }
+  }
 
   function isDark() {
     return root.getAttribute('data-theme') === 'dark';
@@ -73,6 +94,72 @@
     return fbm(u + wx * 0.30, v + wy * 0.30, 4);
   }
 
+  /* ================= 高度场 → 明暗密度图 =================
+   * 先算一张低分辨率高度网格，再由坡度算出明暗（左上光源）；
+   * 烘焙时只按明暗决定该处点子的疏密 —— 不用任何线条，
+   * 纯靠黑白灰的密度差读地形起伏。 */
+  var grid = null;
+
+  function buildGrid() {
+    var GW = 168;
+    var GH = Math.max(64, Math.round(GW * H / Math.max(1, W)));
+    var h = new Float32Array(GW * GH);
+    var gx, gy;
+
+    for (gy = 0; gy < GH; gy++) {
+      for (gx = 0; gx < GW; gx++) {
+        h[gy * GW + gx] = heightAt(gx / GW, gy / GH);
+      }
+    }
+
+    var sh = new Float32Array(GW * GH);
+    var mn = 1e9, mx = -1e9;
+    for (gy = 0; gy < GH; gy++) {
+      for (gx = 0; gx < GW; gx++) {
+        var xm = (gx - 1 + GW) % GW, xp = (gx + 1) % GW;
+        var ym = (gy - 1 + GH) % GH, yp = (gy + 1) % GH;
+        var dx = h[gy * GW + xp] - h[gy * GW + xm];
+        var dy = h[yp * GW + gx] - h[ym * GW + gx];
+        var v = 0.5 + dx * 11 + dy * 12;   // 左上受光
+        sh[gy * GW + gx] = v;
+        if (v < mn) mn = v;
+        if (v > mx) mx = v;
+      }
+    }
+
+    var span = (mx - mn) || 1;
+    for (var i = 0; i < sh.length; i++) sh[i] = (sh[i] - mn) / span;
+
+    grid = { h: h, sh: sh, GW: GW, GH: GH };
+    return grid;
+  }
+
+  function sampleSh(u, v) {
+    var g = grid;
+    var fx = u * g.GW - 0.5, fy = v * g.GH - 0.5;
+    fx = fx < 0 ? 0 : (fx > g.GW - 1.001 ? g.GW - 1.001 : fx);
+    fy = fy < 0 ? 0 : (fy > g.GH - 1.001 ? g.GH - 1.001 : fy);
+    var x0 = fx | 0, y0 = fy | 0;
+    var tx = fx - x0, ty = fy - y0;
+    var i0 = y0 * g.GW + x0, i1 = i0 + g.GW;
+    var a = g.sh[i0] + (g.sh[i0 + 1] - g.sh[i0]) * tx;
+    var b = g.sh[i1] + (g.sh[i1 + 1] - g.sh[i1]) * tx;
+    return a + (b - a) * ty;
+  }
+
+  function sampleH(u, v) {
+    var g = grid;
+    var fx = u * g.GW - 0.5, fy = v * g.GH - 0.5;
+    fx = fx < 0 ? 0 : (fx > g.GW - 1.001 ? g.GW - 1.001 : fx);
+    fy = fy < 0 ? 0 : (fy > g.GH - 1.001 ? g.GH - 1.001 : fy);
+    var x0 = fx | 0, y0 = fy | 0;
+    var tx = fx - x0, ty = fy - y0;
+    var i0 = y0 * g.GW + x0, i1 = i0 + g.GW;
+    var a = g.h[i0] + (g.h[i0 + 1] - g.h[i0]) * tx;
+    var b = g.h[i1] + (g.h[i1 + 1] - g.h[i1]) * tx;
+    return a + (b - a) * ty;
+  }
+
   /* ================= 柔光精灵 ================= */
   function spriteImage() {
     var key = isDark() ? 'dark' : 'light';
@@ -103,7 +190,7 @@
       vx: 0,
       vy: 0,
       depth: depth,
-      size: 0.18 + depth * 0.6 + Math.random() * 0.22,
+      size: 0.12 + depth * 0.4 + Math.random() * 0.16,
       alpha: (0.16 + Math.random() * 0.34) * (0.6 + depth * 0.9),
       phase: Math.random() * Math.PI * 2,
       twinkle: 0.35 + Math.random() * 0.9,
@@ -119,7 +206,7 @@
       y: y,
       vx: 0,
       vy: 0,
-      size: 1.25 + Math.random() * 1.75,
+      size: 0.62 + Math.random() * 0.9,
       alpha: 0.5 + Math.random() * 0.4,
       phase: Math.random() * Math.PI * 2,
       bobF: 0.5 + Math.random() * 1.3,
@@ -155,14 +242,16 @@
   }
 
   /* ================= 沙丘纹理烘焙 =================
-   * 高度场 → 量化成 7 条等高带；带界处点最密（沙脊/等高线），
-   * 带面按奇偶层给不同浓度，形成梯田般的起伏。 */
+   * 按明暗度打点：背光坡面点密（深灰）、受光坡面点疏（留白），
+   * 中间调自然过渡 —— 起伏完全由密度读出来，没有任何线条。 */
   function bakeTexture() {
     var key = (isDark() ? 'd' : 'l') + 'x' + W + 'x' + H;
     if (tex && key === texKey) return tex;
 
     TW = Math.max(2, Math.round(W * TEX_SCALE));
     TH = Math.max(2, Math.round(H * TEX_SCALE));
+
+    if (!grid) buildGrid();
 
     var c = document.createElement('canvas');
     c.width = Math.round(TW * DPR);
@@ -173,26 +262,23 @@
     var rgb = isDark() ? '236,241,247' : '44,52,62';
     g2.fillStyle = 'rgb(' + rgb + ')';
 
-    var tries = Math.round((TW * TH) / 3.4);
+    var tries = Math.round((TW * TH) / 2.4);
     for (var i = 0; i < tries; i++) {
       var x = Math.random() * TW;
       var y = Math.random() * TH;
+      var u = x / TW, v = y / TH;
 
-      var h = heightAt(x / TW, y / TH);
-      var bp = h * BANDS;
-      var band = Math.floor(bp);
-      var fr = bp - band;
-      var edge = Math.min(fr, 1 - fr);
-      var ridge = Math.max(0, 1 - edge / 0.15);          // 带界 → 1
-      var tone = (band % 2) ? 1 : 0.6;                    // 奇偶层浓度差
+      var shv = sampleSh(u, v);          // 0 = 全暗（背光），1 = 全亮（受光）
+      var hv = sampleH(u, v);
 
-      var dens = 0.16 + 0.46 * h + 0.62 * ridge * tone;
+      var dark = 1 - shv;
+      var dens = 0.04 + 0.96 * Math.pow(dark, 1.1) * (0.3 + 0.7 * hv) + 0.22 * hv * hv;
       if (dens > 1) dens = 1;
       if (Math.random() > dens) continue;
 
-      var d = Math.pow(Math.random(), 1.5);
-      var s = 0.34 + d * 0.55 + ridge * 0.8;
-      g2.globalAlpha = 0.07 + 0.36 * dens * (0.45 + 0.55 * d);
+      var d = Math.pow(Math.random(), 1.4);
+      var s = 0.34 + d * 0.6 + dens * 0.7;
+      g2.globalAlpha = 0.07 + 0.55 * dens * (0.5 + 0.5 * d);
       g2.fillRect(x, y, s, s);
     }
 
@@ -224,10 +310,10 @@
     for (i = 0; i < grains.length; i++) {
       g = grains[i];
       var f = flow(g.x, g.y);
-      var speed = 0.4 + g.depth * 1.7;
+      var speed = 0.22 + g.depth * 0.85;
 
-      g.vx += (f[0] * speed - g.vx) * 0.055;
-      g.vy += (f[1] * speed - g.vy) * 0.055;
+      g.vx += (f[0] * speed - g.vx) * 0.032;
+      g.vy += (f[1] * speed - g.vy) * 0.032;
 
       if (mouse.inside && g.depth >= depthGate) {
         var dx = g.x - mouse.x;
@@ -245,11 +331,11 @@
         }
       }
 
-      if (g.vx > 7) g.vx = 7; else if (g.vx < -7) g.vx = -7;
-      if (g.vy > 7) g.vy = 7; else if (g.vy < -7) g.vy = -7;
+      if (g.vx > 3.2) g.vx = 3.2; else if (g.vx < -3.2) g.vx = -3.2;
+      if (g.vy > 3.2) g.vy = 3.2; else if (g.vy < -3.2) g.vy = -3.2;
 
       g.x += g.vx;
-      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.16 * (0.4 + g.depth);
+      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.1 * (0.4 + g.depth);
 
       if (g.x < -20) { g.x = W + 20; g.y = Math.random() * H; }
       else if (g.x > W + 20) { g.x = -20; g.y = Math.random() * H; }
@@ -264,8 +350,8 @@
     for (i = 0; i < near.length; i++) {
       g = near[i];
       var fn = flow(g.x * 0.7, g.y * 0.7);
-      g.vx += (fn[0] * g.speed * 2.2 - g.vx) * 0.06;
-      g.vy += (fn[1] * g.speed * 2.2 - g.vy) * 0.06;
+      g.vx += (fn[0] * g.speed * 0.85 - g.vx) * 0.035;
+      g.vy += (fn[1] * g.speed * 0.85 - g.vy) * 0.035;
 
       if (mouse.inside) {
         var ndx = g.x - mouse.x;
@@ -275,18 +361,18 @@
           var nd = Math.sqrt(nd2) || 1;
           var nk = 1 - nd / 190;
           nk = nk * nk;
-          g.vx += (ndx / nd) * nk * 3.4;
-          g.vy += (ndy / nd) * nk * 3.4;
-          g.vx += mouse.vx * 0.08 * nk;
-          g.vy += mouse.vy * 0.08 * nk;
+          g.vx += (ndx / nd) * nk * 1.5;
+          g.vy += (ndy / nd) * nk * 1.5;
+          g.vx += mouse.vx * 0.05 * nk;
+          g.vy += mouse.vy * 0.05 * nk;
         }
       }
 
-      if (g.vx > 9) g.vx = 9; else if (g.vx < -9) g.vx = -9;
-      if (g.vy > 9) g.vy = 9; else if (g.vy < -9) g.vy = -9;
+      if (g.vx > 3) g.vx = 3; else if (g.vx < -3) g.vx = -3;
+      if (g.vy > 3) g.vy = 3; else if (g.vy < -3) g.vy = -3;
 
       g.x += g.vx;
-      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.5;
+      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.22;
 
       if (g.x < -12) { g.x = W + 12; g.y = Math.random() * H; }
       else if (g.x > W + 12) { g.x = -12; g.y = Math.random() * H; }
@@ -304,15 +390,19 @@
   function paint() {
     ctx.clearRect(0, 0, W, H);
 
-    /* 远景沙丘：1.6 倍纹理沿对角线滚动，四份平铺 */
+    /* 远景沙丘：两层异向滚动，速度带黏滞缓动 —— 像沙被风慢慢拖着走 */
     var t = bakeTexture();
-    var ox = (time * 11) % TW;
-    var oy = (time * 6) % TH;
-    ctx.globalAlpha = 0.95;
-    ctx.drawImage(t, -ox, -oy, TW, TH);
-    ctx.drawImage(t, TW - ox, -oy, TW, TH);
-    ctx.drawImage(t, -ox, TH - oy, TW, TH);
-    ctx.drawImage(t, TW - ox, TH - oy, TW, TH);
+    advanceLayers(dtCache);
+    for (var li = 0; li < LAYERS.length; li++) {
+      var L = LAYERS[li];
+      var dw = TW * L.sc, dh = TH * L.sc;
+      var sx = L.ox % dw, sy = L.oy % dh;
+      ctx.globalAlpha = L.a;
+      ctx.drawImage(t, -sx, -sy, dw, dh);
+      ctx.drawImage(t, dw - sx, -sy, dw, dh);
+      ctx.drawImage(t, -sx, dh - sy, dw, dh);
+      ctx.drawImage(t, dw - sx, dh - sy, dw, dh);
+    }
 
     /* 中层浮沙 */
     var img = spriteImage();
@@ -349,6 +439,7 @@
     if (!visible) { last = now; return; }
     var dt = Math.min(48, (now - last) || 16);
     last = now;
+    dtCache = dt;
     time += dt / 1000;
     step(dt);
     paint();
@@ -363,6 +454,7 @@
     canvas.height = Math.round(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
     texKey = '';
+    grid = null;
     seed();
     paint();
   }
@@ -406,18 +498,18 @@
       ang = Math.random() * Math.PI * 2;
       g = newGrain(x, y);
       g.depth = 0.5 + Math.random() * 0.5;
-      g.size = 0.24 + g.depth * 0.7;
+      g.size = 0.16 + g.depth * 0.5;
       g.alpha = 0.3 + Math.random() * 0.34;
       g.soft = Math.random() > 0.6;
-      g.vx = Math.cos(ang) * (0.5 + Math.random() * 3);
-      g.vy = Math.sin(ang) * (0.5 + Math.random() * 3) - 0.3;
+      g.vx = Math.cos(ang) * (0.4 + Math.random() * 1.6);
+      g.vy = Math.sin(ang) * (0.4 + Math.random() * 1.6) - 0.3;
       grains.push(g);
     }
     for (i = 0; i < 14; i++) {
       ang = Math.random() * Math.PI * 2;
       g = newNear(x, y);
-      g.vx = Math.cos(ang) * (1 + Math.random() * 4);
-      g.vy = Math.sin(ang) * (1 + Math.random() * 4) - 0.6;
+      g.vx = Math.cos(ang) * (0.6 + Math.random() * 2);
+      g.vy = Math.sin(ang) * (0.6 + Math.random() * 2) - 0.6;
       near.push(g);
     }
     if (grains.length > 8000) grains.splice(0, grains.length - 8000);
