@@ -26,13 +26,15 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=sand27">
+  <link rel="stylesheet" href="css/style.css?v=sand28">
 </head>
 <body>
 
-  <!-- 画布（细边框 + 内部颗粒云） -->
+  <!-- 沙面画布：铺满全屏（含边缘带） -->
+  <canvas id="sand-canvas" aria-hidden="true"></canvas>
+
+  <!-- 画布（边框 + 颗粒云 + 内容） -->
   <div class="frame">
-    <canvas id="sand-canvas" aria-hidden="true"></canvas>
     <div class="grain" aria-hidden="true"></div>
 
     <!-- 左上：名字 + 副标题 + 竖排导航（render.js 渲染） -->

@@ -46,7 +46,7 @@ html { background: var(--body-bg); }
 
 body {
   margin: 0;
-  padding: clamp(10px, 1.2vw, 18px);
+  padding: 2.08vw;   /* 边缘带：1440px 窗口 = 30px，其他窗口等比例 */
   background: transparent;
   color: var(--ink);
   font-family: var(--ff-sans);
@@ -69,14 +69,28 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   height: 100%;
   overflow: hidden;
-  border: 1px solid transparent;
-  background: var(--frame-bg);
-  transition: background-color .3s ease, border-color .3s ease;
+  border: 1px solid #000;
+  background: transparent;
+  transition: border-color .3s ease;
+}
+html[data-theme="dark"] .frame { border-color: #f2f4f7; }
+
+/* 边缘带：30% 透明度的墨色叠加（只罩边缘，不盖画布内容） */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  border: 2.08vw solid rgba(10, 13, 17, .3);
+}
+html[data-theme="dark"] body::before {
+  border-color: rgba(242, 244, 247, .3);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
 #sand-canvas {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
   width: 100%;
@@ -118,7 +132,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .brand-name {
   margin: 0;
   font-family: var(--ff-title);
-  font-size: clamp(30px, 3.5vw, 48px);
+  font-size: 4vw;   /* 窗口宽度的 4% */
   font-weight: 200;
   letter-spacing: .01em;
   line-height: 1.06;
@@ -261,8 +275,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .proj-title {
   margin: 0;
-  font-family: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
-  font-size: clamp(38px, 5vw, 72px);
+  font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+  font-size: 4vw;   /* 窗口宽度的 4% */
   font-weight: 300;
   letter-spacing: .015em;
   line-height: 1.1;
