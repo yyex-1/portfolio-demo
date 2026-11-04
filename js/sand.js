@@ -29,19 +29,44 @@
 
   var TEX_SCALE = 1.6;   // 纹理比视口大，图案不在每屏重复
 
-  /* 背景：单层纹理，方向随时间缓慢旋转 → 慢速、多方向漂移；
-   * 速度用低通缓动跟踪，带一点黏滞拖拽感 */
-  var bg = { ox: 0, oy: 0, vx: -2.2, vy: -1.4 };
+  /* 背景：单层纹理，极慢漂移（原速的 1/10）；
+   * 方向按“事件”突然跳变（隔几秒换一个方向），
+   * 转向本身用低通缓动 → 走弧线、有黏滞感；
+   * 每次换向时速度先掉下来再慢慢加上去 → 有加减速的过程 */
+  var BG_SPEED = 0.23;              // 原本 2.3 的十分之一
+  var bg = {
+    ox: 0, oy: 0, vx: 0, vy: 0,
+    ang: -2.35, tAng: -2.35,
+    ramp: 1, nextTurn: 2.6
+  };
   var dtCache = 16;
 
   function advanceBackground(dt) {
     var k = dt / 16.7;
-    var ang = time * 0.045 + Math.sin(time * 0.07) * 0.6;   // 方向缓慢换向
-    var sp = 2.3 + Math.sin(time * 0.09) * 0.9;             // 速度轻微起伏
-    var tx = Math.cos(ang) * sp;
-    var ty = Math.sin(ang) * sp * 0.66;
-    bg.vx += (tx - bg.vx) * Math.min(1, 0.012 * k);
-    bg.vy += (ty - bg.vy) * Math.min(1, 0.012 * k);
+    var sec = dt / 1000;
+
+    /* 换向倒计时到了 → 目标方向突然跳一个随机大角度，速度归零重新加速 */
+    bg.nextTurn -= sec;
+    if (bg.nextTurn <= 0) {
+      var jump = (Math.random() < 0.5 ? -1 : 1) * Math.PI * (0.25 + Math.random() * 0.55);
+      bg.tAng += jump;
+      bg.ramp = 0;
+      bg.nextTurn = 3.4 + Math.random() * 4.8;
+    }
+
+    /* 加速过程：0 → 1 用约 1.8 秒，smoothstep 收尾所以尾段是减速 */
+    bg.ramp = Math.min(1, bg.ramp + sec / 1.8);
+    var r = bg.ramp;
+    var ease = 0.3 + 0.7 * (r * r * (3 - 2 * r));
+
+    /* 方向低通跟踪：转起来是弧线，不是瞬间折线 → 黏滞感 */
+    bg.ang += (bg.tAng - bg.ang) * Math.min(1, 0.05 * k);
+
+    var tx = Math.cos(bg.ang) * BG_SPEED * ease;
+    var ty = Math.sin(bg.ang) * BG_SPEED * 0.72 * ease;
+    bg.vx += (tx - bg.vx) * Math.min(1, 0.022 * k);
+    bg.vy += (ty - bg.vy) * Math.min(1, 0.022 * k);
+
     bg.ox += bg.vx * k;
     bg.oy += bg.vy * k;
   }
@@ -295,7 +320,7 @@
     }
 
     var dwellN = mouse.dwell / DWELL_MAX;
-    var R = 100 + dwellN * 250, R2 = R * R;
+    var R = 20 + dwellN * 30, R2 = R * R;   // 刚悬停 20px → 停满 50px
     var depthGate = 0.78 - dwellN * 0.78;   // 0.78 → 0：越停越往深处掏
     var dwellBoost = 0.7 + dwellN * 0.75;
 
@@ -318,7 +343,7 @@
           var d = Math.sqrt(d2) || 1;
           var k = 1 - d / R;
           k = k * k;
-          var push = k * (0.5 + g.depth * 0.95) * dwellBoost;
+          var push = k * (0.6 + g.depth * 1.15) * dwellBoost;
           g.vx += (dx / d) * push;
           g.vy += (dy / d) * push;
           g.vx += mouse.vx * 0.06 * k;
