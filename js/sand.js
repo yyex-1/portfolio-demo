@@ -48,9 +48,11 @@
     return sprite;
   }
 
-  /* ---------- 沙粒 ---------- */
+  /* ---------- 沙粒 ----------
+   * depth: 0 = 深层（细小暗淡），1 = 表层（大而亮）
+   * 幂次取样让深层沙粒占多数、表层大颗粒稀疏 */
   function newGrain(x, y) {
-    var depth = Math.random();
+    var depth = Math.pow(Math.random(), 1.7);
     return {
       x: x,
       y: y,
