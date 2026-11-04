@@ -50,7 +50,7 @@
 
   /* ---------- 沙粒 ----------
    * depth: 0 = 深层（细小暗淡），1 = 表层（大而亮）
-   * 幂次取样让深层沙粒占多数、表层大颗粒稀疏 */
+   * 幂次取样让深层沙粒占多数；颗粒极细，像悬浮的尘 */
   function newGrain(x, y) {
     var depth = Math.pow(Math.random(), 1.7);
     return {
@@ -59,10 +59,11 @@
       vx: 0,
       vy: 0,
       depth: depth,
-      size: 0.3 + depth * 1.0 + Math.random() * 0.35,
-      alpha: (0.12 + Math.random() * 0.3) * (0.55 + depth * 0.95),
+      size: 0.16 + depth * 0.62 + Math.random() * 0.22,
+      alpha: (0.14 + Math.random() * 0.32) * (0.6 + depth * 0.9),
       phase: Math.random() * Math.PI * 2,
       twinkle: 0.35 + Math.random() * 0.9,
+      bobF: 0.8 + Math.random() * 1.9,
       soft: depth > 0.82
     };
   }
@@ -80,13 +81,14 @@
     }
   }
 
-  /* ---------- 风场：正弦涡流 + 主风向（偏快，流动肉眼可见） ---------- */
+  /* ---------- 风场：海浪式轨道流 ----------
+   * 两列行波叠加：沙粒沿椭圆轨道打转，像浪从画面上滚过去，
+   * 再叠一层慢波制造错落，整体像悬浮在气流里。 */
   function flow(x, y) {
-    var fx = Math.sin(y * 0.0032 + time * 0.9) * 0.45 +
-             Math.sin((x + y * 0.6) * 0.0015 - time * 0.55) * 0.28 -
-             0.85;
-    var fy = Math.cos(x * 0.0027 + time * 0.8) * 0.34 +
-             Math.cos((x - y) * 0.0019 + time * 0.42) * 0.2;
+    var ph = x * 0.0042 + y * 0.0018 - time * 1.3;
+    var ph2 = (x + y) * 0.0011 - time * 0.5;
+    var fx = Math.cos(ph) * 0.55 + Math.cos(ph2) * 0.22 - 0.45;
+    var fy = Math.sin(ph) * 0.5 + Math.sin(ph2) * 0.16;
     return [fx, fy];
   }
 
@@ -137,7 +139,7 @@
       if (g.vy > 7) g.vy = 7; else if (g.vy < -7) g.vy = -7;
 
       g.x += g.vx;
-      g.y += g.vy;
+      g.y += g.vy + Math.sin(time * g.bobF + g.phase) * 0.16 * (0.4 + g.depth);
 
       if (g.x < -20) { g.x = W + 20; g.y = Math.random() * H; }
       else if (g.x > W + 20) { g.x = -20; g.y = Math.random() * H; }
@@ -234,7 +236,7 @@
       var spd = 0.5 + Math.random() * 3.2;
       var g = newGrain(x, y);
       g.depth = 0.5 + Math.random() * 0.5;
-      g.size = 0.4 + g.depth * 1.2;
+      g.size = 0.22 + g.depth * 0.8;
       g.alpha = 0.28 + Math.random() * 0.34;
       g.soft = Math.random() > 0.6;
       g.vx = Math.cos(ang) * spd;
