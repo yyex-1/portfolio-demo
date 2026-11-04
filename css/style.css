@@ -75,18 +75,15 @@ a { color: inherit; text-decoration: none; }
 }
 html[data-theme="dark"] .frame { border-color: #f2f4f7; }
 
-/* 边缘带：背景色 90% 不透明（透明度 10%），垫在沙面之上、文字之下
-   → 沙面透不过边缘，页面文字（右侧标题等）可正常显示在其上 */
+/* 边缘带：纯背景色、完全不透明，垫在沙面之上、文字之下
+   → 背景（沙面）无法透过边缘，页面文字（右侧内容）可正常显示在其上 */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border: 2.08vw solid rgba(247, 248, 246, .9);
-}
-html[data-theme="dark"] body::before {
-  border-color: rgba(18, 21, 27, .9);
+  border: 2.08vw solid var(--frame-bg);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -410,10 +407,10 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .doc-col {
   width: min(600px, 48%);
   height: 100%;
-  /* 比"张同学"低 2 行（3vw 字号 × 2 行 ≈ 6.4vw + 品牌顶 4.16vw - 画框顶 2.08vw ≈ 8.4vw） */
-  padding: 8.4vw 0 calc(var(--gap) + 22px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(8.4vw - 6px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(8.4vw - 6px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  /* 起始高度与 projects 一致 */
+  padding: calc(10.6vw + 12px) 0 calc(var(--gap) + 22px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
 }
 .faq-item { margin-bottom: 40px; }
 .faq-q {
