@@ -315,6 +315,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .proj-meta {
   margin: 9px 0 0;
+  text-align: right;   /* 与标题右端对齐 */
   font-family: var(--ff-sans);
   font-size: 10.5px;
   font-weight: 500;   /* 描述行还原 10.5px / 500 */
