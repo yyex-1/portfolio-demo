@@ -88,15 +88,15 @@ body::after {
 }
 html[data-theme="dark"] body::after { border-color: #f2f4f7; }
 
-/* 边缘带：50% 透明背景色，位于内容之上（右侧文字压在边缘下一层）
-   → 页面文字滑到边缘处会被边缘带覆盖/减淡，不再穿透显示 */
+/* 边缘带：不透明背景色，压住全屏沙面（边缘处不透出背景），
+   位于沙面之上、文字之下（文字可显示在边缘带上） */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 3;          /* 高于 .stage(z2) 内容层，低于边缘文字/锁(z55/z56) */
+  z-index: 1;
   pointer-events: none;
-  border: var(--band-w) solid var(--frame-band);
+  border: var(--band-w) solid var(--frame-bg);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -108,9 +108,7 @@ body::before {
   height: 100%;
   pointer-events: none;
   display: block;
-  /* 背景只出现在边框以内：裁掉边缘带覆盖的区域，画布外不露沙 */
-  clip-path: inset(var(--band-w));
-  /* 沙点与瓷白画布做正片叠底，颗粒更实、更像墨；暗色主题换滤色 */
+  /* 沙面铺满全屏；边缘带用不透明背景色压住，边缘处不透出沙 */
   mix-blend-mode: multiply;
 }
 html[data-theme="dark"] #sand-canvas { mix-blend-mode: screen; }
