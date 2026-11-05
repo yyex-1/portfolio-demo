@@ -6,7 +6,7 @@
 (function (global) {
   'use strict';
 
-  var STORAGE_KEY = 'bc-portfolio-v4';
+  var STORAGE_KEY = 'bc-portfolio-v5';
   var ADMIN_PASSWORD = 'WORLDISWORTH0924';
 
   // ---- 默认数据（真实信息，不含虚构实习/公司） ----
@@ -48,9 +48,9 @@
     projects: [
       {
         id: 'wander-pins',
-        title: '足迹地图 · 全球足迹记录',
+        title: 'Wander Pins',
         date: '2026',
-        desc: '用 Leaflet + TopoJSON 把「去过哪里」画成可染色的世界地图：点位落在真实行政区划内自动染色，按大洲/国家/省份统计足迹，一键导出 1080×1920 分享海报；地图与依赖全部本地化，断网也能演示。',
+        desc: '足迹地图 · 全球足迹记录：用 Leaflet + TopoJSON 把「去过哪里」画成可染色的世界地图——点位落在真实行政区划内自动染色，按大洲/国家/省份统计足迹，一键导出 1080×1920 分享海报；地图与依赖全部本地化，断网也能演示。',
         coverUrl: '',
         demoUrl: 'https://yyex-1.github.io/wander-pins/',
         githubUrl: 'https://github.com/yyex-1/wander-pins',
