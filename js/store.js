@@ -6,7 +6,7 @@
 (function (global) {
   'use strict';
 
-  var STORAGE_KEY = 'bc-portfolio-v5';
+  var STORAGE_KEY = 'bc-portfolio-v6';
   var ADMIN_PASSWORD = 'WORLDISWORTH0924';
 
   // ---- 默认数据（真实信息，不含虚构实习/公司） ----
@@ -15,6 +15,7 @@
       name: '闫雅欣',
       slogan: '用 AI 把想法变成能上线的作品',
       intro: '在校学生，前端方向自学。习惯和 AI 结对做完整项目——拆需求、写代码、调样式、部署上线，把想法变成能访问的页面。',
+      hobbies: '前端与视觉设计 · 地图与数据可视化 · 用 AI 折腾独立小项目',
       avatarUrl: '',
       email: 'yyex1114@qq.com',
       github: 'https://github.com/yyex-1',

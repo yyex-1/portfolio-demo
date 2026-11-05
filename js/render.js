@@ -34,7 +34,7 @@
     el.innerHTML =
       '<div class="brand">' +
         '<h1 class="brand-name"><a href="#home" data-view="home">' + esc(info.name) + '</a></h1>' +
-        '<p class="brand-sub">AI × Frontend</p>' +
+        '<p class="brand-sub">个人作品集 · AI × Frontend</p>' +
       '</div>' +
       '<nav class="side-nav">' + nav + '</nav>';
   }
@@ -124,6 +124,7 @@
       '<div class="info-social">' + social + '</div>' +
       '<div class="info-awards">' +
         rows +
+        (info.hobbies ? '<div class="award"><span class="award-k">INTERESTS · 兴趣</span><span class="award-v">' + esc(info.hobbies) + '</span></div>' : '') +
         (info.intro ? '<div class="award"><span class="award-k">ABOUT</span><span class="award-v">' + esc(info.slogan || '') + '</span><span class="award-d">' + esc(info.intro) + '</span></div>' : '') +
       '</div>';
     return view('info', inner);
