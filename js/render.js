@@ -34,7 +34,7 @@
     el.innerHTML =
       '<div class="brand">' +
         '<h1 class="brand-name"><a href="#home" data-view="home">' + esc(info.name) + '</a></h1>' +
-        '<p class="brand-sub">Frontend Developer</p>' +
+        '<p class="brand-sub">AI × Frontend</p>' +
       '</div>' +
       '<nav class="side-nav">' + nav + '</nav>';
   }
@@ -71,9 +71,7 @@
       if (p.tags && p.tags.length) meta.push(esc(p.tags.join(' / ')));
       if (p.githubUrl) meta.push('<a class="proj-code" href="' + esc(p.githubUrl) + '" target="_blank" rel="noopener noreferrer">CODE</a>');
 
-      var item =
-        '<h2 class="proj-title">' + esc(p.title) + '</h2>' +
-        (meta.length ? '<p class="proj-meta">' + meta.join('<span class="meta-sep"> / </span>') + '</p>' : '');
+      var item = '<h2 class="proj-title">' + esc(p.title) + '</h2>';
 
       var open = p.demoUrl
         ? '<a class="proj-item" href="' + esc(p.demoUrl) + '" target="_blank" rel="noopener noreferrer">'
@@ -82,6 +80,7 @@
 
       return '<article class="proj" data-project-id="' + esc(p.id) + '"' + adminAttrs + '>' +
           open + item + close +
+          (meta.length ? '<p class="proj-meta">' + meta.join('<span class="meta-sep"> / </span>') + '</p>' : '') +
         '</article>';
     }).join('');
 
@@ -130,12 +129,13 @@
     return view('info', inner);
   }
 
-  // ---- Contact：右下角一行邮箱 ----
+  // ---- Contact：右下角邮箱 + GitHub ----
   function renderContact() {
     var info = Store.getSiteInfo();
     var inner =
       '<div class="contact-note">' +
         (info.email ? '<a class="ilink" href="mailto:' + esc(info.email) + '">' + esc(info.email) + '</a>' : '') +
+        (info.github ? '<a class="ilink" href="' + esc(info.github) + '" target="_blank" rel="noopener noreferrer">github.com/' + esc((info.github.split('/').pop() || 'github')) + ' ↗</a>' : '') +
       '</div>';
     return view('contact', inner);
   }

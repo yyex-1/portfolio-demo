@@ -412,6 +412,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   right: var(--gap);
   bottom: calc(var(--gap) + 26px);
   z-index: 4;
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
 }
 .contact-note .ilink {
   font-family: var(--ff-latin);

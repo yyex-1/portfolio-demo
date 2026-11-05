@@ -6,123 +6,71 @@
 (function (global) {
   'use strict';
 
-  var STORAGE_KEY = 'bc-portfolio-v3';
+  var STORAGE_KEY = 'bc-portfolio-v4';
   var ADMIN_PASSWORD = 'WORLDISWORTH0924';
 
-  // ---- 默认数据 ----
+  // ---- 默认数据（真实信息，不含虚构实习/公司） ----
   var DEFAULT_DATA = {
     siteInfo: {
-      name: '张同学',
-      slogan: '构建优雅的Web体验',
-      intro: '前端开发工程师，专注现代化 Web 应用开发。热爱将复杂问题转化为简洁的解决方案，擅长 Vue 生态与可视化方向。',
+      name: '闫雅欣',
+      slogan: '用 AI 把想法变成能上线的作品',
+      intro: '在校学生，前端方向自学。习惯和 AI 结对做完整项目——拆需求、写代码、调样式、部署上线，把想法变成能访问的页面。',
       avatarUrl: '',
-      email: 'your.email@example.com',
-      github: 'https://github.com/yourname',
+      email: 'yyex1114@qq.com',
+      github: 'https://github.com/yyex-1',
       social: [],
-      footer: 'Built with HTML + TailwindCSS + Vanilla JS'
+      footer: 'Built with HTML + Canvas + Vanilla JS'
     },
     experience: [
       {
-        time: '2024.07 — 至今',
-        role: '前端开发实习生',
-        org: '某科技公司',
-        desc: '参与核心业务前端架构设计，负责组件库封装与性能优化，推动工程化规范落地。',
-        tags: ['Vue3', 'TypeScript', 'Vite']
+        time: '2026',
+        role: '校赛一等奖 · 团队作品',
+        org: '「工行杯」大学生金融科技创新大赛',
+        desc: '与团队完整走完选题、方案与演示，我负责前端界面与交互实现，作品获校赛一等奖。',
+        tags: ['团队协作', '前端实现']
       },
       {
-        time: '2023.09 — 2024.06',
-        role: '校园项目技术负责人',
-        org: '计算机创新实验室',
-        desc: '主导校园活动平台从 0 到 1 开发，负责需求分析、架构设计与前后端协调。',
-        tags: ['React', 'Node.js', 'MongoDB']
+        time: '2026',
+        role: '足迹地图 · 全球足迹记录（个人项目）',
+        org: '课程实践',
+        desc: '用 Leaflet + TopoJSON 把「去过哪里」画成可染色的世界地图，按大洲/国家/省份统计足迹，支持导出分享海报与离线加载。',
+        tags: ['Leaflet', 'TopoJSON', 'Canvas']
       },
       {
-        time: '2023.03 — 2023.09',
-        role: '开源贡献者',
-        org: 'GitHub',
-        desc: '参与多个前端开源项目，提交 PR 修复 Bug 与新增特性，活跃于技术社区。',
-        tags: ['开源', 'Git', '社区']
+        time: '持续',
+        role: 'AI 辅助开发实践',
+        org: '自学',
+        desc: '用 AI 结对的方式学前端：拆需求、读文档、写代码、调试与部署，独立做出作品集站点与足迹地图两个上线项目。',
+        tags: ['AI 协作', '调试', '部署']
       }
     ],
-    categories: ['Web应用', '工具', '可视化'],
+    categories: ['Web应用', '可视化', '工具'],
     projects: [
       {
-        id: 'leaflet-global-map',
-        title: 'Leaflet全球交互地图',
-        date: '2025.10',
-        desc: '基于Leaflet与GeoJSON实现的可交互全球地图程序，支持点位标记、信息弹窗，适配多端。',
+        id: 'wander-pins',
+        title: '足迹地图 · 全球足迹记录',
+        date: '2026',
+        desc: '用 Leaflet + TopoJSON 把「去过哪里」画成可染色的世界地图：点位落在真实行政区划内自动染色，按大洲/国家/省份统计足迹，一键导出 1080×1920 分享海报；地图与依赖全部本地化，断网也能演示。',
         coverUrl: '',
-        demoUrl: 'https://willowy-paletas-04cf3b.netlify.app/',
-        githubUrl: '',
-        tags: ['Leaflet', 'GeoJSON', 'JavaScript', 'HTML/CSS'],
+        demoUrl: 'https://yyex-1.github.io/wander-pins/',
+        githubUrl: 'https://github.com/yyex-1/wander-pins',
+        tags: ['Leaflet', 'TopoJSON', 'Canvas'],
         category: '可视化',
         featured: true,
         sortIndex: 0
       },
       {
-        id: 'realtime-whiteboard',
-        title: '实时协同白板',
-        date: '2025.06',
-        desc: '基于 WebSocket 的多人实时白板，支持笔迹同步、撤销重做与房间分享。',
+        id: 'portfolio-site',
+        title: '作品集站点',
+        date: '2026',
+        desc: '本站：Canvas 程序化沙丘背景 + 极简排版，纯静态部署在 GitHub Pages，不用任何框架。',
         coverUrl: '',
-        demoUrl: '',
-        githubUrl: '',
-        tags: ['WebSocket', 'Canvas', 'Node.js'],
+        demoUrl: 'https://yyex-1.github.io/portfolio-demo/',
+        githubUrl: 'https://github.com/yyex-1/portfolio-demo',
+        tags: ['Canvas', 'Vanilla JS', 'GitHub Pages'],
         category: 'Web应用',
         featured: true,
         sortIndex: 1
-      },
-      {
-        id: 'data-dashboard',
-        title: '数据可视化大屏',
-        date: '2025.03',
-        desc: '面向业务监控的可视化大屏，ECharts 自定义主题与增量渲染，万级数据流畅交互。',
-        coverUrl: '',
-        demoUrl: '',
-        githubUrl: '',
-        tags: ['ECharts', 'Vue3', 'DataV'],
-        category: '可视化',
-        featured: true,
-        sortIndex: 2
-      },
-      {
-        id: 'campus-platform',
-        title: '校园活动平台',
-        date: '2024.11',
-        desc: '校园活动发布与报名一体化平台，从 0 到 1 完成需求分析、架构设计与前后端协调。',
-        coverUrl: '',
-        demoUrl: '',
-        githubUrl: '',
-        tags: ['React', 'Node.js', 'MongoDB'],
-        category: 'Web应用',
-        featured: true,
-        sortIndex: 3
-      },
-      {
-        id: 'miniui-components',
-        title: 'MiniUI 组件库',
-        date: '2024.06',
-        desc: '轻量级 Vue3 组件库，20+ 高频组件，完整的主题定制与按需引入方案。',
-        coverUrl: '',
-        demoUrl: '',
-        githubUrl: '',
-        tags: ['Vue3', 'TypeScript', 'Vite'],
-        category: '工具',
-        featured: true,
-        sortIndex: 4
-      },
-      {
-        id: 'tech-blog',
-        title: '技术博客与文章集',
-        date: '2024.01',
-        desc: '静态站点生成的前端博客，记录学习笔记与工程实践，SSR 与 SEO 优化。',
-        coverUrl: '',
-        demoUrl: '',
-        githubUrl: '',
-        tags: ['VitePress', 'Markdown', 'SSR'],
-        category: '工具',
-        featured: true,
-        sortIndex: 5
       }
     ],
     faq: [
@@ -132,7 +80,11 @@
       },
       {
         q: '可以看一下源码吗？',
-        a: '本站托管在 GitHub 上，欢迎 Star 与交流。'
+        a: '可以，本站和足迹地图都开源在 GitHub（yyex-1），欢迎 Star 与交流。',
+        links: [
+          { label: 'portfolio-demo — 本站源码', url: 'https://github.com/yyex-1/portfolio-demo' },
+          { label: 'wander-pins — 足迹地图', url: 'https://github.com/yyex-1/wander-pins' }
+        ]
       },
       {
         q: '可以使用你的代码吗？',
@@ -140,11 +92,11 @@
       },
       {
         q: '你是如何学习前端的？',
-        a: '书籍、文档和开源项目，边做边学。推荐几个常翻的资源：',
+        a: '以做项目为主：遇到问题先查文档，再和 AI 一起拆解、写代码、调试。常翻的几个资源：',
         links: [
           { label: 'MDN Web Docs', url: 'https://developer.mozilla.org/zh-CN/' },
-          { label: 'Vue 官方文档', url: 'https://cn.vuejs.org/' },
-          { label: 'ECharts 示例库', url: 'https://echarts.apache.org/examples/zh/' },
+          { label: 'Leaflet 文档', url: 'https://leafletjs.com/' },
+          { label: 'TopoJSON 说明', url: 'https://github.com/topojson/topojson-client' },
           { label: 'The Book of Shaders', url: 'https://thebookofshaders.com/' }
         ]
       }
