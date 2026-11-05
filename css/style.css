@@ -50,7 +50,7 @@ html { background: var(--body-bg); }
 body {
   margin: 0;
   padding: var(--band-w);   /* 边缘带固定 40px，不随窗口缩放 */
-  background: transparent;
+  background: var(--body-bg);   /* 背景色铺满全屏（最底层） */
   color: var(--ink);
   font-family: var(--ff-sans);
   font-size: 11px;
