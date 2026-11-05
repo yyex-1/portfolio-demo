@@ -85,7 +85,7 @@ body::after {
   inset: var(--band-w);
   z-index: 6;
   pointer-events: none;
-  border: 1px solid rgba(0, 0, 0, .3);
+  border: 2px solid rgba(0, 0, 0, .3);
 }
 html[data-theme="dark"] body::after { border-color: rgba(242, 244, 247, .3); }
 
