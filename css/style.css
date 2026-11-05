@@ -5,7 +5,8 @@
 :root {
   --body-bg: #f7f8f6;
   --frame-bg: #f7f8f6;
-  --frame-band: rgba(247, 248, 246, .2);  /* 边缘带：80% 透明 */
+  --frame-band: rgba(247, 248, 246, .5);  /* 边缘带：50% 透明 */
+  --band-w: 40px;                          /* 边缘带固定宽度 */
   --ink: #0a0d11;
   --muted: #47525c;
   --line: rgba(10, 13, 17, .34);          /* 边框：低透明度细线，不再用实黑 */
@@ -27,7 +28,7 @@
 html[data-theme="dark"] {
   --body-bg: #12151b;
   --frame-bg: #12151b;
-  --frame-band: rgba(18, 21, 27, .2);
+  --frame-band: rgba(18, 21, 27, .5);
   --ink: #f2f4f7;
   --muted: #a3adb8;
   --line: rgba(242, 244, 247, .3);
@@ -48,7 +49,7 @@ html { background: var(--body-bg); }
 
 body {
   margin: 0;
-  padding: 40px;   /* 边缘带固定 40px，不随窗口缩放 */
+  padding: var(--band-w);   /* 边缘带固定 40px，不随窗口缩放 */
   background: transparent;
   color: var(--ink);
   font-family: var(--ff-sans);
@@ -77,15 +78,15 @@ a { color: inherit; text-decoration: none; }
 }
 html[data-theme="dark"] .frame { border-color: #f2f4f7; }
 
-/* 边缘带：20% 透明背景色，垫在沙面之上、文字之下
-   → 背景（沙面）透过边缘可见度降低但仍在；页面文字（右侧内容）可透过边缘被看到 */
+/* 边缘带：50% 透明背景色，位于内容之上（右侧文字压在边缘下一层）
+   → 页面文字滑到边缘处会被边缘带覆盖/减淡，不再穿透显示 */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 3;          /* 高于 .stage(z2) 内容层，低于边缘文字/锁(z55/z56) */
   pointer-events: none;
-  border: 40px solid var(--frame-band);
+  border: var(--band-w) solid var(--frame-band);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -97,6 +98,8 @@ body::before {
   height: 100%;
   pointer-events: none;
   display: block;
+  /* 背景只出现在边框以内：裁掉边缘带覆盖的区域，画布外不露沙 */
+  clip-path: inset(var(--band-w));
   /* 沙点与瓷白画布做正片叠底，颗粒更实、更像墨；暗色主题换滤色 */
   mix-blend-mode: multiply;
 }
@@ -484,8 +487,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 /* ---------- 画布外左边缘：主题切换（纯黑、垫在边缘带之上、骑在左边框上） ---------- */
 .edge-theme {
   position: fixed;
-  left: 24px;          /* 骑在 40px 边缘带的左边框线上 */
-  bottom: 40px;        /* 下侧与下边框平齐 */
+  left: 24px;          /* 骑在边缘带的左边框线上 */
+  bottom: var(--band-w);  /* 下侧与下边框平齐 */
   z-index: 55;         /* 边缘带(z1)之上的一层 */
   writing-mode: vertical-rl;
   transform: rotate(180deg);
@@ -563,7 +566,7 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 
 /* ---------- 响应式 ---------- */
 @media (max-width: 760px) {
-  body { padding: 10px; font-size: 11px; }
+  body { --band-w: 10px; padding: var(--band-w); font-size: 11px; }
   .edge-theme { display: none; }
   .brand { top: 18px; left: 16px; }
   .brand-name { font-size: clamp(27px, 7.6vw, 34px); }
