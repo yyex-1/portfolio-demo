@@ -5,7 +5,7 @@
 :root {
   --body-bg: #f7f8f6;
   --frame-bg: #f7f8f6;
-  --frame-band: rgba(247, 248, 246, .8);  /* 边缘带：20% 透明，文字可透过 */
+  --frame-band: rgba(247, 248, 246, .2);  /* 边缘带：80% 透明 */
   --ink: #0a0d11;
   --muted: #47525c;
   --line: rgba(10, 13, 17, .34);          /* 边框：低透明度细线，不再用实黑 */
@@ -27,7 +27,7 @@
 html[data-theme="dark"] {
   --body-bg: #12151b;
   --frame-bg: #12151b;
-  --frame-band: rgba(18, 21, 27, .8);
+  --frame-band: rgba(18, 21, 27, .2);
   --ink: #f2f4f7;
   --muted: #a3adb8;
   --line: rgba(242, 244, 247, .3);
@@ -48,7 +48,7 @@ html { background: var(--body-bg); }
 
 body {
   margin: 0;
-  padding: 35px;   /* 边缘带固定 35px，不随窗口缩放 */
+  padding: 40px;   /* 边缘带固定 40px，不随窗口缩放 */
   background: transparent;
   color: var(--ink);
   font-family: var(--ff-sans);
@@ -85,7 +85,7 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border: 35px solid var(--frame-band);
+  border: 40px solid var(--frame-band);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -229,7 +229,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .manifesto {
   position: absolute;
   right: var(--gap);
-  bottom: calc(var(--gap) - 16px);   /* 整体下调两行 */
+  bottom: calc(var(--gap) + 26px);   /* 上调两行（每行约21px） */
   width: min(268px, 43%);
   display: flex;
   flex-direction: column;
@@ -275,9 +275,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .proj-title {
   margin: 0;
-  font-family: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+  font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
   font-size: 57.6px;  /* = 1440px 窗口下 4vw 的大小 */
-  font-weight: 600;   /* 加粗 */
+  font-weight: 200;   /* 细体 */
   letter-spacing: .015em;
   line-height: 1.1;
   transition: color .3s ease, transform .45s var(--ease), opacity .3s ease;
@@ -481,20 +481,20 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 画布外左边缘：主题切换 ---------- */
+/* ---------- 画布外左边缘：主题切换（纯黑、垫在边缘带之上、骑在左边框上） ---------- */
 .edge-theme {
   position: fixed;
-  left: 12px;          /* 贴近边框 */
-  bottom: 35px;        /* 下侧与下边框平齐 */
-  z-index: 55;
+  left: 24px;          /* 骑在 40px 边缘带的左边框线上 */
+  bottom: 40px;        /* 下侧与下边框平齐 */
+  z-index: 55;         /* 边缘带(z1)之上的一层 */
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: var(--ff-sans);
-  font-size: 10px;     /* 加大 */
-  font-weight: 700;    /* 加粗 */
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: .34em;
   text-transform: uppercase;
-  color: #4e5862;
+  color: #000;         /* 纯黑色 */
   user-select: none;
   display: flex;
   align-items: center;
@@ -505,7 +505,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   cursor: pointer;
   transition: color .2s ease;
 }
-html[data-theme="dark"] .edge-theme { color: #a5afba; }
+html[data-theme="dark"] .edge-theme { color: #f2f4f7; }
 .edge-theme:hover { color: var(--ink); }
 .edge-theme-box {
   width: 10px;         /* 符号加大 */
