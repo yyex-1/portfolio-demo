@@ -46,7 +46,7 @@ html { background: var(--body-bg); }
 
 body {
   margin: 0;
-  padding: 30px;   /* 边缘固定 30px（= 1440px 窗口的宽度），不随窗口缩放 */
+  padding: 35px;   /* 边缘带固定 35px，不随窗口缩放 */
   background: transparent;
   color: var(--ink);
   font-family: var(--ff-sans);
@@ -83,7 +83,7 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border: 30px solid var(--frame-bg);
+  border: 35px solid var(--frame-bg);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -123,15 +123,15 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 /* ---------- 左上：名字 + 副标题 + 导航 ---------- */
 .brand {
   position: absolute;
-  top: var(--gap);
+  top: 20px;   /* 上移：距窗口顶部 = 边缘带 35px + 20px = 55px */
   left: var(--gap);
   z-index: 5;
 }
 .brand-name {
   margin: 0;
   font-family: var(--ff-title);
-  font-size: 43px;   /* 固定 = 1440px 窗口下 3vw 的大小 */
-  font-weight: 200;
+  font-size: 4vw;    /* = 窗口宽度的 4% */
+  font-weight: 400;  /* 加粗 */
   letter-spacing: .01em;
   line-height: 1.06;
   text-indent: -.02em;
@@ -234,7 +234,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   gap: 4px;
   text-align: right;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;    /* 全部统一加粗 */
   line-height: 1.9;
   letter-spacing: .03em;
   color: var(--ink);
@@ -291,8 +291,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-meta {
   margin: 9px 0 0;
   font-family: var(--ff-sans);
-  font-size: 9px;
-  font-weight: 400;
+  font-size: 10.5px;   /* 9px × 1.15 */
+  font-weight: 600;    /* 加粗一点 */
   letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--ink);
@@ -310,8 +310,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-code:hover { border-color: var(--ink); }
 .proj-desc {
   margin: 5px 0 0;
-  font-size: 10.5px;
-  font-weight: 500;
+  font-size: 12px;     /* 10.5px × 1.15 ≈ 12px */
+  font-weight: 600;    /* 加粗一点 */
   line-height: 1.75;
   letter-spacing: .018em;
   color: var(--muted);
@@ -403,6 +403,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .view-faq, .view-copycats {
   display: flex;
   justify-content: flex-end;
+  padding-right: 48px;   /* 文本最右侧离边框的距离加大 */
 }
 .doc-col {
   width: min(600px, 48%);
@@ -417,14 +418,14 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   margin: 0 0 10px;
   font-family: var(--ff-sans);
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 700;    /* 问题：粗 */
   letter-spacing: .02em;
   color: var(--ink);
 }
 .faq-a {
   margin: 0;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 400;    /* 答案：常规（与问题区分粗细） */
   line-height: 1.85;
   letter-spacing: .02em;
   color: var(--ink);
