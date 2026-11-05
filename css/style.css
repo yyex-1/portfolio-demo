@@ -74,11 +74,19 @@ a { color: inherit; text-decoration: none; }
   /* 放开裁剪：允许列表文字延伸进边缘带区域，透过边缘可见；
      页面级滚动仍由 html/body overflow:hidden 控制 */
   overflow: visible;
-  border: 1px solid #000;
+  border: 0;   /* 边框线改由 body::after 绘制（层级高于文字，文字从线下穿过） */
   background: transparent;
-  transition: border-color .3s ease;
 }
-html[data-theme="dark"] .frame { border-color: #f2f4f7; }
+/* 边框线：画在内容之上（z4），文字延伸出边框时从线下方穿过，不再压线穿模 */
+body::after {
+  content: '';
+  position: fixed;
+  inset: var(--band-w);
+  z-index: 4;
+  pointer-events: none;
+  border: 1px solid #000;
+}
+html[data-theme="dark"] body::after { border-color: #f2f4f7; }
 
 /* 边缘带：50% 透明背景色，位于内容之上（右侧文字压在边缘下一层）
    → 页面文字滑到边缘处会被边缘带覆盖/减淡，不再穿透显示 */
