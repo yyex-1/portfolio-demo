@@ -26,12 +26,15 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=sand47">
+  <link rel="stylesheet" href="css/style.css?v=sand48">
 </head>
 <body>
 
   <!-- 沙面画布：铺满全屏（含边缘带） -->
   <canvas id="sand-canvas" aria-hidden="true"></canvas>
+
+  <!-- 边缘带2：20% 透明度，最上层，压在边框线与延伸文字之上 -->
+  <div class="band2" aria-hidden="true"></div>
 
   <!-- 画布（边框 + 颗粒云 + 内容） -->
   <div class="frame">

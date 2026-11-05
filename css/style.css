@@ -5,7 +5,7 @@
 :root {
   --body-bg: #f7f8f6;
   --frame-bg: #f7f8f6;
-  --frame-band: rgba(247, 248, 246, .7);  /* 边缘带2：30% 透明度，压在边框线上 */
+  --frame-band: rgba(247, 248, 246, .8);  /* 边缘带2：20% 透明度，压在边框线上 */
   --band-w: 40px;                          /* 边缘带固定宽度 */
   --ink: #0a0d11;
   --muted: #47525c;
@@ -28,7 +28,7 @@
 html[data-theme="dark"] {
   --body-bg: #12151b;
   --frame-bg: #12151b;
-  --frame-band: rgba(18, 21, 27, .7);
+  --frame-band: rgba(18, 21, 27, .8);
   --ink: #f2f4f7;
   --muted: #a3adb8;
   --line: rgba(242, 244, 247, .3);
@@ -77,8 +77,8 @@ a { color: inherit; text-decoration: none; }
   border: 0;   /* 边框线改由 body::after 绘制（层级高于文字，文字从线下穿过） */
   background: transparent;
 }
-/* 边框线：30% 透明度的黑线（等效于被边缘带2压淡后的效果），
-   画在内容之上（z4）；不再叠加整环半透明层，边缘带保持纯背景色 */
+/* 边框线：30% 透明度的黑线，
+   画在内容之上（z4），文字延伸出边框时从线下方穿过 */
 body::after {
   content: '';
   position: fixed;
@@ -88,6 +88,16 @@ body::after {
   border: 1px solid rgba(0, 0, 0, .3);
 }
 html[data-theme="dark"] body::after { border-color: rgba(242, 244, 247, .3); }
+
+/* 边缘带2：20% 透明度（80% 不透明背景色），最上层（z5），
+   压在边框线与延伸进边缘带的文字之上 → 线与带内文字再被减淡一档 */
+.band2 {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border: calc(var(--band-w) + 1px) solid var(--frame-band);
+}
 
 /* 边缘带1：纯背景色（--body-bg），完全不透明，压住全屏沙面
    → 边缘处只显示背景色，不透出沙粒；文字层在其上仍可显示 */
