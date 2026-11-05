@@ -5,6 +5,7 @@
 :root {
   --body-bg: #f7f8f6;
   --frame-bg: #f7f8f6;
+  --frame-band: rgba(247, 248, 246, .8);  /* 边缘带：20% 透明，文字可透过 */
   --ink: #0a0d11;
   --muted: #47525c;
   --line: rgba(10, 13, 17, .34);          /* 边框：低透明度细线，不再用实黑 */
@@ -26,6 +27,7 @@
 html[data-theme="dark"] {
   --body-bg: #12151b;
   --frame-bg: #12151b;
+  --frame-band: rgba(18, 21, 27, .8);
   --ink: #f2f4f7;
   --muted: #a3adb8;
   --line: rgba(242, 244, 247, .3);
@@ -75,15 +77,15 @@ a { color: inherit; text-decoration: none; }
 }
 html[data-theme="dark"] .frame { border-color: #f2f4f7; }
 
-/* 边缘带：纯背景色、完全不透明，垫在沙面之上、文字之下
-   → 背景（沙面）无法透过边缘，页面文字（右侧内容）可正常显示在其上 */
+/* 边缘带：20% 透明背景色，垫在沙面之上、文字之下
+   → 背景（沙面）透过边缘可见度降低但仍在；页面文字（右侧内容）可透过边缘被看到 */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border: 35px solid var(--frame-bg);
+  border: 35px solid var(--frame-band);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -232,7 +234,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   display: flex;
   flex-direction: column;
   gap: 4px;
-  text-align: right;
+  text-align: left;   /* 左对齐 */
   font-size: 11px;
   font-weight: 700;    /* 全部统一加粗 */
   line-height: 1.9;
@@ -273,12 +275,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .proj-title {
   margin: 0;
-  font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
-  font-size: 43px;   /* 固定 = 1440px 窗口下 3vw 的大小，不随窗口缩放 */
-  font-weight: 200;
-  /* 描边蚀细：按字号等比缩放（.014em = 1440px 窗口下的 0.6px），
-     窗口大小变化时粗细比例恒定，不随网页大小改变 */
-  -webkit-text-stroke: .014em var(--frame-bg);
+  font-family: 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
+  font-size: 57.6px;  /* = 1440px 窗口下 4vw 的大小 */
+  font-weight: 600;   /* 加粗 */
   letter-spacing: .015em;
   line-height: 1.1;
   transition: color .3s ease, transform .45s var(--ease), opacity .3s ease;
@@ -291,8 +290,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-meta {
   margin: 9px 0 0;
   font-family: var(--ff-sans);
-  font-size: 10.5px;   /* 9px × 1.15 */
-  font-weight: 600;    /* 加粗一点 */
+  font-size: 10.5px;
+  font-weight: 500;   /* 描述行还原 10.5px / 500 */
   letter-spacing: .16em;
   text-transform: uppercase;
   color: var(--ink);
@@ -310,8 +309,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-code:hover { border-color: var(--ink); }
 .proj-desc {
   margin: 5px 0 0;
-  font-size: 12px;     /* 10.5px × 1.15 ≈ 12px */
-  font-weight: 600;    /* 加粗一点 */
+  font-size: 10.5px;   /* 还原 10.5px */
+  font-weight: 500;
   line-height: 1.75;
   letter-spacing: .018em;
   color: var(--muted);
@@ -482,27 +481,21 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- 画布外左边缘 ---------- */
-.edge-mono,
+/* ---------- 画布外左边缘：主题切换 ---------- */
 .edge-theme {
   position: fixed;
-  left: 7px;
+  left: 12px;          /* 贴近边框 */
+  bottom: 35px;        /* 下侧与下边框平齐 */
   z-index: 55;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-family: var(--ff-sans);
-  font-size: 8px;
-  font-weight: 500;
+  font-size: 10px;     /* 加大 */
+  font-weight: 700;    /* 加粗 */
   letter-spacing: .34em;
   text-transform: uppercase;
   color: #4e5862;
   user-select: none;
-}
-html[data-theme="dark"] .edge-mono,
-html[data-theme="dark"] .edge-theme { color: #a5afba; }
-.edge-mono { bottom: 32%; }
-.edge-theme {
-  bottom: 18px;
   display: flex;
   align-items: center;
   gap: 7px;
@@ -510,13 +503,13 @@ html[data-theme="dark"] .edge-theme { color: #a5afba; }
   border: 0;
   padding: 0;
   cursor: pointer;
-  font-family: var(--ff-sans);
   transition: color .2s ease;
 }
+html[data-theme="dark"] .edge-theme { color: #a5afba; }
 .edge-theme:hover { color: var(--ink); }
 .edge-theme-box {
-  width: 6px;
-  height: 6px;
+  width: 10px;         /* 符号加大 */
+  height: 10px;
   background: currentColor;
   flex: none;
 }
@@ -571,7 +564,7 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 /* ---------- 响应式 ---------- */
 @media (max-width: 760px) {
   body { padding: 10px; font-size: 11px; }
-  .edge-mono, .edge-theme { display: none; }
+  .edge-theme { display: none; }
   .brand { top: 18px; left: 16px; }
   .brand-name { font-size: clamp(27px, 7.6vw, 34px); }
   .brand-sub { font-size: 8px; letter-spacing: .2em; }
