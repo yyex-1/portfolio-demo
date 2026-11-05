@@ -5,7 +5,7 @@
 :root {
   --body-bg: #f7f8f6;
   --frame-bg: #f7f8f6;
-  --frame-band: rgba(247, 248, 246, .5);  /* 边缘带：50% 透明 */
+  --frame-band: rgba(247, 248, 246, .7);  /* 边缘带2：30% 透明度，压在边框线上 */
   --band-w: 40px;                          /* 边缘带固定宽度 */
   --ink: #0a0d11;
   --muted: #47525c;
@@ -28,7 +28,7 @@
 html[data-theme="dark"] {
   --body-bg: #12151b;
   --frame-bg: #12151b;
-  --frame-band: rgba(18, 21, 27, .5);
+  --frame-band: rgba(18, 21, 27, .7);
   --ink: #f2f4f7;
   --muted: #a3adb8;
   --line: rgba(242, 244, 247, .3);
@@ -87,6 +87,17 @@ body::after {
   border: 1px solid #000;
 }
 html[data-theme="dark"] body::after { border-color: #f2f4f7; }
+
+/* 边缘带2：30% 透明度，最上层（z5），压在边框线与延伸文字之上
+   → 边框线被减淡 30%，边缘带内文字呈 30% 可见度；沙面在带1之下完全不可见 */
+.frame::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  border: calc(var(--band-w) + 1px) solid var(--frame-band);
+}
 
 /* 边缘带：不透明背景色，压住全屏沙面（边缘处不透出背景），
    位于沙面之上、文字之下（文字可显示在边缘带上） */
