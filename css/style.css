@@ -272,14 +272,16 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 #projects-drop-mount:empty { display: none; }
 .proj-list {
   width: min(880px, 74%);
-  /* 向下延伸进边缘带：文字可以滚到边框之下，透过边缘带可见 */
-  height: calc(100% + var(--band-w));
-  /* 顶部：比"张同学"的下一行再低一行；列表贯穿全高（字号已固定，用 px） */
-  padding: 165px 0 calc(var(--gap) + 10px);
-  /* 顶端渐隐滑入；底端仅在延伸区最后 15px 轻微减淡，
-     边缘带内的文字主要由 50% 边缘带负责减淡 */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
+  /* 上下都延伸进边缘带：文字可滚到边框之外，透过边缘可见 */
+  margin-top: calc(-1 * var(--band-w));
+  height: calc(100% + var(--band-w) * 2);
+  /* 顶部：比"张同学"的下一行再低一行（padding 补回上延伸的 40px）；
+     列表贯穿全高（字号已固定，用 px） */
+  padding: calc(165px + var(--band-w)) 0 calc(var(--gap) + 10px);
+  /* 顶端/底端对称：仅在贴近边框的最后 15px 减淡到 50%，不归零，
+     文字进入边缘带后保持半透明可见（上下效果一致） */
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .5) 0, #000 15px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .5) 0, #000 15px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
 }
 .proj { margin: 0 0 clamp(30px, 6.2vh, 62px); }
 .proj-item {
@@ -420,13 +422,14 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .doc-col {
   width: min(600px, 48%);
-  /* 向下延伸进边缘带：文字可透过边缘可见 */
-  height: calc(100% + var(--band-w));
-  /* 起始高度与 projects 一致（165px，固定值） */
-  padding: 165px 0 calc(var(--gap) + 22px);
-  /* 顶端渐隐滑入；底端仅延伸区最后 15px 轻微减淡 */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
+  /* 上下都延伸进边缘带：文字可透过边缘可见（与 projects 一致） */
+  margin-top: calc(-1 * var(--band-w));
+  height: calc(100% + var(--band-w) * 2);
+  /* 起始高度与 projects 一致（165px + 上延伸补偿） */
+  padding: calc(165px + var(--band-w)) 0 calc(var(--gap) + 22px);
+  /* 顶端/底端对称：最后 15px 减淡到 50%，不归零 */
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .5) 0, #000 15px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, .5) 0, #000 15px, #000 calc(100% - 15px), rgba(0, 0, 0, .5) 100%);
 }
 .faq-item { margin-bottom: 40px; }
 .faq-q {
