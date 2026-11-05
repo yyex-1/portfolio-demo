@@ -177,7 +177,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   padding-left: 0;
   font-family: var(--ff-sans);
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 800;   /* 加粗 */
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--ink);
@@ -266,9 +266,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   height: 100%;
   /* 顶部：比"张同学"的下一行再低一行；列表贯穿全高（字号已固定，用 px） */
   padding: 165px 0 calc(var(--gap) + 10px);
-  /* 边框透明度处理：列表顶端/底端渐隐，内容像从边框下滑过 */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), transparent 100%);
+  /* 边框透明度处理：顶端渐隐滑入；底端保留 45% 可见度，透过边缘带仍可见 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), rgba(0, 0, 0, .45) 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), rgba(0, 0, 0, .45) 100%);
 }
 .proj { margin: 0 0 clamp(30px, 6.2vh, 62px); }
 .proj-item {
@@ -412,8 +412,10 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   height: 100%;
   /* 起始高度与 projects 一致（165px，固定值） */
   padding: 165px 0 calc(var(--gap) + 22px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 58px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  /* 边框透明度处理：顶端渐隐滑入；底端只降到 45%（不再完全消失），
+     文字贴近边缘时透过 50% 边缘带仍可见 */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), rgba(0, 0, 0, .45) 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), rgba(0, 0, 0, .45) 100%);
 }
 .faq-item { margin-bottom: 40px; }
 .faq-q {
