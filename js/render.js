@@ -108,7 +108,7 @@
       return '<a class="ilink" href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.label) + ' ↗</a>';
     }).join('');
     if (!social && info.email) {
-      social = '<a class="ilink" href="mailto:' + esc(info.email) + '">Email ↗</a>';
+      social = '<a class="ilink" href="mailto:' + esc(info.email) + '">' + esc(info.email) + ' ↗</a>';
     }
 
     var rows = exp.map(function (e) {

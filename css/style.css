@@ -367,6 +367,8 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   text-align: left;
 }
 .info-social .ilink { display: block; margin-bottom: 6px; }
+/* 邮箱地址保持原样小写，不转全大写 */
+.info-social .ilink[href^="mailto:"] { text-transform: none; letter-spacing: .12em; }
 .info-awards {
   position: absolute;
   right: var(--gap);
