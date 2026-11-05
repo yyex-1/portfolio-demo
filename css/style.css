@@ -277,8 +277,9 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
   font-size: 3vw;   /* 窗口宽度的 3% */
   font-weight: 200;
-  /* 描边蚀细：用底色描边把笔画再削细一档（雅黑 Light 已是雅黑最细字重） */
-  -webkit-text-stroke: .6px var(--frame-bg);
+  /* 描边蚀细：按字号等比缩放（.014em = 1440px 窗口下的 0.6px），
+     窗口大小变化时粗细比例恒定，不随网页大小改变 */
+  -webkit-text-stroke: .014em var(--frame-bg);
   letter-spacing: .015em;
   line-height: 1.1;
   transition: color .3s ease, transform .45s var(--ease), opacity .3s ease;
