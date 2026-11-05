@@ -77,27 +77,17 @@ a { color: inherit; text-decoration: none; }
   border: 0;   /* 边框线改由 body::after 绘制（层级高于文字，文字从线下穿过） */
   background: transparent;
 }
-/* 边框线：画在内容之上（z4），文字延伸出边框时从线下方穿过，不再压线穿模 */
+/* 边框线：30% 透明度的黑线（等效于被边缘带2压淡后的效果），
+   画在内容之上（z4）；不再叠加整环半透明层，边缘带保持纯背景色 */
 body::after {
   content: '';
   position: fixed;
   inset: var(--band-w);
   z-index: 4;
   pointer-events: none;
-  border: 1px solid #000;
+  border: 1px solid rgba(0, 0, 0, .3);
 }
-html[data-theme="dark"] body::after { border-color: #f2f4f7; }
-
-/* 边缘带2：30% 透明度，最上层（z5），压在边框线与延伸文字之上
-   → 边框线被减淡 30%，边缘带内文字呈 30% 可见度；沙面在带1之下完全不可见 */
-.frame::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  border: calc(var(--band-w) + 1px) solid var(--frame-band);
-}
+html[data-theme="dark"] body::after { border-color: rgba(242, 244, 247, .3); }
 
 /* 边缘带1：纯背景色（--body-bg），完全不透明，压住全屏沙面
    → 边缘处只显示背景色，不透出沙粒；文字层在其上仍可显示 */
@@ -126,12 +116,10 @@ html[data-theme="dark"] #sand-canvas { mix-blend-mode: screen; }
 
 /* ---------- 颗粒云（叠在沙粒之上的纸张纹理） ---------- */
 .grain {
-  position: absolute;
-  inset: -25%;
-  z-index: 1;
+  position: fixed;
+  inset: -3%;
+  z-index: 0;   /* 与沙面同层，DOM 靠后 → 盖在沙面之上；边缘带1(z1)再盖住边缘部分 */
   pointer-events: none;
-  /* frame 放开 overflow 后，用 clip-path 把颗粒纹理裁回画布内（inset 25/150 = 画布边界） */
-  clip-path: inset(16.667%);
   opacity: var(--grain-opacity);
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.38' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.42 0 0 0 0 0.42 0 0 0 0 0.42 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='420' height='420' filter='url(%23n)'/%3E%3C/svg%3E");
