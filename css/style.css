@@ -46,7 +46,7 @@ html { background: var(--body-bg); }
 
 body {
   margin: 0;
-  padding: 2.08vw;   /* 边缘带：1440px 窗口 = 30px，其他窗口等比例 */
+  padding: 30px;   /* 边缘固定 30px（= 1440px 窗口的宽度），不随窗口缩放 */
   background: transparent;
   color: var(--ink);
   font-family: var(--ff-sans);
@@ -83,7 +83,7 @@ body::before {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border: 2.08vw solid var(--frame-bg);
+  border: 30px solid var(--frame-bg);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
@@ -130,7 +130,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .brand-name {
   margin: 0;
   font-family: var(--ff-title);
-  font-size: 3vw;   /* 窗口宽度的 3% */
+  font-size: 43px;   /* 固定 = 1440px 窗口下 3vw 的大小 */
   font-weight: 200;
   letter-spacing: .01em;
   line-height: 1.06;
@@ -240,14 +240,13 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
   color: var(--ink);
 }
 .manifesto-line:first-child {
-  font-family: var(--ff-han);
-  font-size: 15px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: .06em;
-  line-height: 1.5;
-  margin-bottom: 4px;
+  letter-spacing: .03em;
+  line-height: 1.9;
+  margin-bottom: 0;
 }
-.manifesto-line + .manifesto-line:not(:first-child) { color: var(--muted); }
+.manifesto-line + .manifesto-line:not(:first-child) { color: var(--ink); }
 
 /* ---------- Projects：大字列表（右列全高，滚动时在边框内侧淡出） ---------- */
 .view-projects {
@@ -260,11 +259,11 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-list {
   width: min(880px, 74%);
   height: 100%;
-  /* 顶部：比"张同学"的下一行再低一行（3vw 字号的一行 ≈ 3.3vw）；列表贯穿全高 */
-  padding: calc(10.6vw + 12px) 0 calc(var(--gap) + 10px);
+  /* 顶部：比"张同学"的下一行再低一行；列表贯穿全高（字号已固定，用 px） */
+  padding: 165px 0 calc(var(--gap) + 10px);
   /* 边框透明度处理：列表顶端/底端渐隐，内容像从边框下滑过 */
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 40px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 40px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 40px), transparent 100%);
 }
 .proj { margin: 0 0 clamp(30px, 6.2vh, 62px); }
 .proj-item {
@@ -275,7 +274,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .proj-title {
   margin: 0;
   font-family: 'Microsoft YaHei Light', 'Microsoft YaHei', '微软雅黑', 'PingFang SC', sans-serif;
-  font-size: 3vw;   /* 窗口宽度的 3% */
+  font-size: 43px;   /* 固定 = 1440px 窗口下 3vw 的大小，不随窗口缩放 */
   font-weight: 200;
   /* 描边蚀细：按字号等比缩放（.014em = 1440px 窗口下的 0.6px），
      窗口大小变化时粗细比例恒定，不随网页大小改变 */
@@ -408,10 +407,10 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .doc-col {
   width: min(600px, 48%);
   height: 100%;
-  /* 起始高度与 projects 一致 */
-  padding: calc(10.6vw + 12px) 0 calc(var(--gap) + 22px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
-  mask-image: linear-gradient(to bottom, transparent 0, #000 calc(10.6vw + 4px), #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  /* 起始高度与 projects 一致（165px，固定值） */
+  padding: 165px 0 calc(var(--gap) + 22px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 58px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 157px, #000 calc(100% - var(--gap) - 58px), transparent 100%);
 }
 .faq-item { margin-bottom: 40px; }
 .faq-q {
@@ -590,6 +589,29 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .contact-note { right: 16px; }
   .copyright { left: 16px; bottom: 10px; }
   .lock-btn { top: 12px; right: 12px; }
+}
+
+/* ---------- Info 页窄窗口布局（≤959px，仿 psaholic 左对齐堆叠） ---------- */
+@media (max-width: 959px) {
+  .view-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 30px;
+    padding: 100px 16px 56px;
+    overflow-y: auto;
+  }
+  .view-info .info-top,
+  .view-info .info-social,
+  .view-info .info-awards {
+    position: static;
+    transform: none;
+    text-align: left;
+    width: auto;
+    max-width: 100%;
+  }
+  .view-info .info-awards { width: min(460px, 92%); }
 }
 
 /* 弱动效 */

@@ -247,7 +247,8 @@
     for (var i = 0; i < total; i++) {
       grains.push(newGrain(Math.random() * W, Math.random() * H));
     }
-    var nn = W < 760 ? 520 : 1100;
+    /* 表层粗沙：随窗口面积等比增减（1440x900 ≈ 1296 粒） */
+    var nn = Math.min(2200, Math.round((W * H) / 1000));
     near.length = 0;
     for (var j = 0; j < nn; j++) {
       near.push(newNear(Math.random() * W, Math.random() * H));
@@ -557,7 +558,7 @@
       near.push(g);
     }
     if (grains.length > 22800) grains.splice(0, grains.length - 22800);
-    if (near.length > 1750) near.splice(0, near.length - 1750);
+    if (near.length > 2600) near.splice(0, near.length - 2600);
   }, { passive: true });
 
   document.addEventListener('visibilitychange', function () {
