@@ -99,15 +99,15 @@ html[data-theme="dark"] body::after { border-color: #f2f4f7; }
   border: calc(var(--band-w) + 1px) solid var(--frame-band);
 }
 
-/* 边缘带：不透明背景色，压住全屏沙面（边缘处不透出背景），
-   位于沙面之上、文字之下（文字可显示在边缘带上） */
+/* 边缘带1：纯背景色（--body-bg），完全不透明，压住全屏沙面
+   → 边缘处只显示背景色，不透出沙粒；文字层在其上仍可显示 */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  border: var(--band-w) solid var(--frame-bg);
+  border: var(--band-w) solid var(--body-bg);
 }
 
 /* ---------- 沙滩粒子层 ---------- */
