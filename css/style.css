@@ -638,8 +638,8 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .side-nav { top: calc(18px + 74px); left: 16px; }
   .nav-link { margin-bottom: 12px; font-size: 8.5px; }
 
-  /* 宣言块收窄到红线右侧（约窗口 2/3 处起），底边位置不变，文字可向上增高 */
-  .manifesto { left: auto; right: 16px; width: min(130px, 31%); bottom: 46px; text-align: right; }
+  /* 宣言块收窄到红线右侧（约窗口 2/3 处起），底边位置不变，文字可向上增高；文字左对齐 */
+  .manifesto { left: auto; right: 16px; width: min(130px, 31%); bottom: 46px; text-align: left; }
   .view-projects { padding: 0 16px; justify-content: flex-end; }
   /* 项目列表：左缘收到红线右侧(约28%)，meta 过长时右对齐换行；整体下移一行(76→100px) */
   .proj-list { width: 100%; padding: 100px 0 56px 28%; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); }
@@ -650,9 +650,9 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .info-top { top: 18px; right: 16px; }
   .info-social { left: auto; right: 16px; text-align: right; }
   /* FAQ / Copycats：内容列右移，给左侧竖排导航留出独立栏位（参考 p5aholic 手机版双栏），
-     顶部 padding 上移到品牌区之下，避免名字/副标题与正文重叠 */
+     顶部 padding 上移到品牌区之下，避免名字/副标题与正文重叠；整体下移 2 行(110→158px) */
   .view-faq, .view-copycats { padding: 0 14px 0 116px; }
-  .doc-col { width: 100%; padding: 110px 0 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); }
+  .doc-col { width: 100%; padding: 158px 0 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); }
   .info-awards { left: auto; right: 16px; width: min(380px, 88%); text-align: right; }
   .contact-note { right: 16px; }
   .copyright { left: 16px; bottom: 10px; }
@@ -685,9 +685,24 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 }
 
 /* ---------- Info 页布局分两档：≥960 桌面（右侧贴边）/ ≤959 窄窗（左对齐堆叠列）。
-   ≤500px 仅微调：与手机端导航/名字的 16px 左边距对齐 ---------- */
+   ≤500px 手机：做成 FAQ 页式双栏——导航列留左，内容列自 116px 起左对齐；整体下移 2 行(158px) ---------- */
 @media (max-width: 500px) {
-  .view-info { padding-left: 16px; }
+  .view-info {
+    justify-content: flex-end;
+    align-items: flex-start;
+    text-align: left;
+    padding: 158px 16px 56px 116px;
+  }
+  .view-info .info-top,
+  .view-info .info-social,
+  .view-info .info-awards {
+    position: static;
+    transform: none;
+    text-align: left;
+    width: auto;
+    max-width: 100%;
+  }
+  .view-info .info-awards { width: auto; }
 }
 
 /* 弱动效 */
