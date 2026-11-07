@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -26,9 +26,14 @@
       },
     }
   </script>
-  <link rel="stylesheet" href="css/style.css?v=sand54">
+  <link rel="stylesheet" href="css/style.css?v=sand55">
 </head>
 <body>
+
+  <!-- 开场：黑屏居中「名字 + Portfolio」，随后淡出进入站点 -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <span class="intro-name">闫雅欣</span><span class="intro-sub">Portfolio</span>
+  </div>
 
   <!-- 沙面画布：铺满全屏（含边缘带） -->
   <canvas id="sand-canvas" aria-hidden="true"></canvas>
@@ -68,9 +73,10 @@
   <script src="js/store.js?v=bc8"></script>
   <script src="js/render.js?v=sand6"></script>
   <script src="js/admin.js?v=bc2"></script>
-  <script src="js/theme.js?v=mono1"></script>
+  <script src="js/theme.js?v=mono2"></script>
   <script src="js/pager.js?v=psa1"></script>
   <script src="js/sand.js?v=sand24"></script>
+  <script src="js/intro.js?v=intro1"></script>
   <script src="js/app.js?v=psa1"></script>
 </body>
 </html>

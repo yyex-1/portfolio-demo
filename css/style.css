@@ -596,6 +596,37 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 .card-dragging { opacity: .35; }
 .card-drag-over { outline: 1px solid var(--ink); outline-offset: 4px; }
 
+/* ---------- 开场动画（仿 p5aholic：黑屏居中名字，淡出进站） ---------- */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #0a0a0a;
+  color: #f5f5f4;
+  transition: opacity .75s ease;
+  cursor: pointer;
+}
+.intro-name {
+  font-family: var(--ff-sans);
+  font-size: clamp(22px, 5.6vw, 40px);
+  font-weight: 400;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.intro-sub {
+  font-family: var(--ff-sans);
+  font-size: clamp(15px, 3.8vw, 27px);
+  font-weight: 300;
+  color: rgba(245, 245, 244, .45);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+.intro.is-done { opacity: 0; pointer-events: none; }
+
 /* ---------- 响应式 ---------- */
 @media (max-width: 760px) {
   body { --band-w: 10px; padding: var(--band-w); font-size: 11px; }
@@ -613,7 +644,10 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .proj-item:hover .proj-title { transform: none; }
   .info-top { top: 18px; right: 16px; }
   .info-social { left: auto; right: 16px; text-align: right; }
-  .doc-col { width: 100%; padding: 96px 16px 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); }
+  /* FAQ / Copycats：内容列右移，给左侧竖排导航留出独立栏位（参考 p5aholic 手机版双栏），
+     顶部 padding 上移到品牌区之下，避免名字/副标题与正文重叠 */
+  .view-faq, .view-copycats { padding: 0 14px 0 116px; }
+  .doc-col { width: 100%; padding: 110px 0 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 120px, #000 calc(100% - 88px), transparent 100%); }
   .info-awards { left: auto; right: 16px; width: min(380px, 88%); text-align: right; }
   .contact-note { right: 16px; }
   .copyright { left: 16px; bottom: 10px; }
@@ -628,7 +662,8 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
     justify-content: flex-end;
     align-items: flex-start;
     gap: 30px;
-    padding: 100px 16px 56px;
+    /* 左侧留出竖排导航栏位，避免堆叠内容与导航重叠 */
+    padding: 100px 16px 56px 116px;
     overflow-y: auto;
   }
   .view-info .info-top,
@@ -646,6 +681,7 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 /* 弱动效 */
 @media (prefers-reduced-motion: reduce) {
   .grain { animation: none; }
+  .intro { display: none; }
   .view, .view.is-active { transition: opacity .01s linear, visibility 0s; transform: none; }
   * { transition-duration: .01ms !important; }
 }
