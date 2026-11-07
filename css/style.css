@@ -628,7 +628,8 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 .intro.is-done { opacity: 0; pointer-events: none; }
 
 /* ---------- 响应式 ---------- */
-@media (max-width: 760px) {
+/* 手机断点 700px：桌面窗口最窄为 760px，不能被误判为手机布局 */
+@media (max-width: 700px) {
   body { --band-w: 10px; padding: var(--band-w); font-size: 11px; }
   .edge-theme { display: none; }
   .brand { top: 18px; left: 16px; }
@@ -654,8 +655,8 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .lock-btn { top: 12px; right: 12px; }
 }
 
-/* ---------- Info 页窄窗口布局（761–959px，仿 p5aholic 窄窗：左对齐堆叠列） ---------- */
-@media (max-width: 959px) and (min-width: 761px) {
+/* ---------- Info 页窄窗口布局（701–959px，含桌面最窄的 760px；仿 p5aholic 窄窗：左对齐堆叠列） ---------- */
+@media (max-width: 959px) and (min-width: 701px) {
   .view-info {
     display: flex;
     flex-direction: column;
@@ -680,7 +681,7 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
 }
 
 /* ---------- 手机 Info 页布局保持不变：右侧贴边堆叠 ---------- */
-@media (max-width: 760px) {
+@media (max-width: 700px) {
   .view-info {
     justify-content: flex-end;
     align-items: flex-end;
