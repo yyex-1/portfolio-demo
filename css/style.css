@@ -680,23 +680,24 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .view-info .info-awards { width: min(460px, 92%); }
 }
 
-/* ---------- 手机 Info 页布局（≤500px）：右侧贴边堆叠 ---------- */
+/* ---------- 手机 Info 页布局（≤500px）：同 FAQ 页双栏——导航列留左，内容列自红线位(116px)起向右排 ---------- */
 @media (max-width: 500px) {
   .view-info {
     justify-content: flex-end;
-    align-items: flex-end;
-    text-align: right;
-    padding: 100px 16px 56px;
+    align-items: flex-start;
+    text-align: left;
+    padding: 110px 16px 56px 116px;
   }
   .view-info .info-top,
   .view-info .info-social,
   .view-info .info-awards {
     position: static;
     transform: none;
-    text-align: right;
+    text-align: left;
     width: auto;
     max-width: 100%;
   }
+  .view-info .info-awards { width: auto; }
 }
 
 /* 弱动效 */
