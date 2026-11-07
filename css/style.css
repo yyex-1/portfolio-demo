@@ -638,7 +638,8 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .side-nav { top: calc(18px + 74px); left: 16px; }
   .nav-link { margin-bottom: 12px; font-size: 8.5px; }
 
-  .manifesto { left: auto; right: 16px; width: min(320px, 88%); bottom: 46px; text-align: right; }
+  /* 宣言块收窄到红线右侧（约窗口 2/3 处起），底边位置不变，文字可向上增高 */
+  .manifesto { left: auto; right: 16px; width: min(130px, 31%); bottom: 46px; text-align: right; }
   .view-projects { padding: 0 16px; justify-content: flex-end; }
   .proj-list { width: 100%; padding: 76px 0 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); }
   .proj-title { font-size: clamp(26px, 7.4vw, 40px); }
@@ -680,24 +681,10 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   .view-info .info-awards { width: min(460px, 92%); }
 }
 
-/* ---------- 手机 Info 页布局（≤500px）：同 FAQ 页双栏——导航列留左，内容列自红线位(116px)起向右排 ---------- */
+/* ---------- Info 页布局分两档：≥960 桌面（右侧贴边）/ ≤959 窄窗（左对齐堆叠列）。
+   ≤500px 仅微调：与手机端导航/名字的 16px 左边距对齐 ---------- */
 @media (max-width: 500px) {
-  .view-info {
-    justify-content: flex-end;
-    align-items: flex-start;
-    text-align: left;
-    padding: 110px 16px 56px 116px;
-  }
-  .view-info .info-top,
-  .view-info .info-social,
-  .view-info .info-awards {
-    position: static;
-    transform: none;
-    text-align: left;
-    width: auto;
-    max-width: 100%;
-  }
-  .view-info .info-awards { width: auto; }
+  .view-info { padding-left: 16px; }
 }
 
 /* 弱动效 */
