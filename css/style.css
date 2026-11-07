@@ -349,7 +349,7 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 }
 .empty { text-align: right; font-size: 11px; color: var(--muted); }
 
-/* ---------- Info：右上外链 / 中部社交 / 右下经历 ---------- */
+/* ---------- Info：右上外链 / 右中社交 / 右下经历（整列贴近右边框） ---------- */
 .info-top {
   position: absolute;
   top: var(--gap);
@@ -360,11 +360,11 @@ html[data-theme="dark"] .grain { mix-blend-mode: screen; }
 .info-top .ilink { display: block; margin-bottom: 5px; }
 .info-social {
   position: absolute;
-  top: 50%;
-  left: 55%;
-  transform: translateY(-58%);
+  top: calc(var(--gap) + 40px);   /* 紧贴在右上 GitHub 外链的下一行 */
+  right: var(--gap);
+  transform: none;
   z-index: 4;
-  text-align: left;
+  text-align: right;
 }
 .info-social .ilink { display: block; margin-bottom: 6px; }
 /* 邮箱地址保持原样小写，不转全大写 */
@@ -660,18 +660,19 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: flex-start;
+    align-items: flex-end;
     gap: 30px;
-    /* 左侧留出竖排导航栏位，避免堆叠内容与导航重叠 */
-    padding: 100px 16px 56px 116px;
+    /* 内容列贴右边框（同参考站整列贴边的排版），右侧留 16px 边距 */
+    padding: 100px 16px 56px;
     overflow-y: auto;
+    text-align: right;
   }
   .view-info .info-top,
   .view-info .info-social,
   .view-info .info-awards {
     position: static;
     transform: none;
-    text-align: left;
+    text-align: right;
     width: auto;
     max-width: 100%;
   }

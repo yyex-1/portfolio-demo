@@ -10,8 +10,8 @@
 
   try {
     var saved = localStorage.getItem(KEY);
-    // 默认配色为黑色（dark）；仅当用户显式选过 light 才用浅色
-    root.setAttribute('data-theme', saved === 'light' ? 'light' : 'dark');
+    // 默认配色为白色（light）；仅当用户显式选过 dark 才用黑色
+    root.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
   } catch (e) { /* 隐私模式下忽略 */ }
 
   var btn = document.getElementById('theme-toggle');
