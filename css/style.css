@@ -641,7 +641,10 @@ html[data-theme="dark"] .dropzone-active { background: rgba(255, 255, 255, .06);
   /* 宣言块收窄到红线右侧（约窗口 2/3 处起），底边位置不变，文字可向上增高 */
   .manifesto { left: auto; right: 16px; width: min(130px, 31%); bottom: 46px; text-align: right; }
   .view-projects { padding: 0 16px; justify-content: flex-end; }
-  .proj-list { width: 100%; padding: 76px 0 56px; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); }
+  /* 项目列表：左缘收到红线右侧(约28%)，meta 过长时右对齐换行；整体下移一行(76→100px) */
+  .proj-list { width: 100%; padding: 100px 0 56px 28%; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 96px), transparent 100%); }
+  /* meta 允许换行，避免红线内截断丢字 */
+  .proj-meta { white-space: normal; overflow: visible; text-overflow: clip; }
   .proj-title { font-size: clamp(26px, 7.4vw, 40px); }
   .proj-item:hover .proj-title { transform: none; }
   .info-top { top: 18px; right: 16px; }
